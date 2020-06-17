@@ -3,7 +3,7 @@ version: 0.1.0
 main: just.plots.JustPlots
 author: PureGero
 api-version: 1.13
-softdepend: [Multiverse-Core, WorldEdit]
+softdepend: [Multiverse-Core, WorldEdit, Essentials]
 website: https://github.com/PureGero/JustPlots
 commands:
     justplots:

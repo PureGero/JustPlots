@@ -1,5 +1,7 @@
 package just.plots;
 
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
 import just.plots.commands.JustPlotsCommand;
 import just.plots.converters.PlotSquaredConverter;
 import just.plots.database.Database;
@@ -8,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -110,7 +113,22 @@ public class JustPlots extends JavaPlugin {
     }
 
     public static String getUsername(UUID uuid) {
-        return Bukkit.getOfflinePlayer(uuid).getName();
+        String name = Bukkit.getOfflinePlayer(uuid).getName();
+
+        if (name != null) {
+            return name;
+        }
+
+        Plugin essentials = Bukkit.getPluginManager().getPlugin("Essentials");
+        if (essentials != null) {
+            User user = ((Essentials) essentials).getUser(uuid);
+
+            if (user != null) {
+                name = user.getName();
+            }
+        }
+
+        return name;
     }
 
 }

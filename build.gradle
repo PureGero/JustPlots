@@ -17,6 +17,12 @@ repositories {
   maven {
     url "https://maven.enginehub.org/repo/"
   }
+  maven {
+    url "https://ci.ender.zone/plugin/repository/everything/"
+  }
+  maven {
+    url "https://papermc.io/repo/repository/maven-public/"
+  }
 }
 
 version = "0.1"
@@ -33,12 +39,22 @@ configurations {
 dependencies {
   compileOnly "org.spigotmc:spigot-api:$bukkit_version"
   compileOnly "com.sk89q.worldedit:worldedit-bukkit:7.0.0-SNAPSHOT"
+  compileOnly "net.ess3:EssentialsX:2.17.2"
+  compile "io.papermc:paperlib:1.0.3"
 }
 
-jar {
-  configurations.shade.each { dep ->
-    from(project.zipTree(dep)) {
-      exclude 'META-INF', 'META-INF/**'
-    }
+buildscript {
+  repositories {
+    jcenter()
   }
+
+  dependencies {
+    classpath "com.github.jengelman.gradle.plugins:shadow:2.0.2"
+  }
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+shadowJar {
+  relocate 'io.papermc.lib', 'just.plots.paperlib'
 }
