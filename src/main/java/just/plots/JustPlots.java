@@ -76,19 +76,15 @@ public class JustPlots extends JavaPlugin {
 
         PlotWorld world = getPlotWorld(location.getWorld());
 
-        System.out.println("world: " + world);
-
         if (!world.isPlotWorld()) {
             return null;
         }
 
-        int x = location.getBlockX() / (world.getPlotSize() + world.getRoadSize());
-        int z = location.getBlockZ() / (world.getPlotSize() + world.getRoadSize());
+        int x = location.getBlockX() / (world.getPlotSize() + world.getRoadSize()) + 1;
+        int z = location.getBlockZ() / (world.getPlotSize() + world.getRoadSize()) + 1;
 
         int dx = Math.floorMod(location.getBlockX(), (world.getPlotSize() + world.getRoadSize()));
         int dz = Math.floorMod(location.getBlockZ(), (world.getPlotSize() + world.getRoadSize()));
-
-        System.out.printf("x=%d,z=%d,dx=%d,dz=%d\n", x, z, dx, dz);
 
         if (dx <= world.getRoadSize() / 2 || dx > world.getPlotSize() + world.getRoadSize() / 2 ||
                 dz <= world.getRoadSize() / 2 || dz > world.getPlotSize() + world.getRoadSize() / 2) {
