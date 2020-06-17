@@ -1,5 +1,6 @@
 package just.plots;
 
+import just.plots.commands.JustPlotsCommand;
 import just.plots.converters.PlotSquaredConverter;
 import just.plots.database.Database;
 import just.plots.database.SQLiteDatabase;
@@ -23,6 +24,8 @@ public class JustPlots extends JavaPlugin {
         database.createTables();
 
         new PlotSquaredConverter(this);
+
+        new JustPlotsCommand(this);
 
     }
 
