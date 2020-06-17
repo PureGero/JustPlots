@@ -1,9 +1,12 @@
 package just.plots;
 
+import org.bukkit.Location;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class Plot {
@@ -90,6 +93,11 @@ public class Plot {
         return world.hashCode() ^ plotId.hashCode();
     }
 
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Plot && ((Plot) other).world.equals(world) && ((Plot) other).plotId.equals(plotId);
+    }
+
     public PlotID getId() {
         return plotId;
     }
@@ -100,5 +108,13 @@ public class Plot {
 
     public PlotWorld getPlotWorld() {
         return plotWorld;
+    }
+
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public Set<UUID> getAdded() {
+        return added;
     }
 }
