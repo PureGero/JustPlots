@@ -1,0 +1,44 @@
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "idea"
+
+buildscript {
+  ext.bukkit_version = "1.15.2-R0.1-SNAPSHOT"
+}
+
+repositories {
+  mavenCentral()
+  maven {
+    url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+  }
+  maven {
+    url "https://oss.sonatype.org/content/repositories/snapshots/"
+  }
+  maven {
+    url "https://maven.enginehub.org/repo/"
+  }
+}
+
+version = "0.1"
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+configurations {
+  shade
+  compile.extendsFrom shade
+}
+
+// Use the shade configuration to include the dependency's class files in your final JAR
+
+dependencies {
+  compileOnly "org.spigotmc:spigot-api:$bukkit_version"
+  compileOnly "com.sk89q.worldedit:worldedit-bukkit:7.0.0-SNAPSHOT"
+}
+
+jar {
+  configurations.shade.each { dep ->
+    from(project.zipTree(dep)) {
+      exclude 'META-INF', 'META-INF/**'
+    }
+  }
+}
