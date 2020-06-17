@@ -117,4 +117,8 @@ public class Plot {
     public Set<UUID> getAdded() {
         return added;
     }
+
+    public long getCreation() {
+        return creation;
+    }
 }
