@@ -1,9 +1,7 @@
 package just.plots;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import io.papermc.lib.PaperLib;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
@@ -15,6 +13,8 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public class Plot implements Comparable<Plot> {
     private final PlotId plotId;
@@ -209,22 +209,42 @@ public class Plot implements Comparable<Plot> {
         return calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DATE);
     }
 
-    public Block getSign() {
+    public Location getSign() {
         return new Location(Bukkit.getWorld(world),
                 (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0,
                 plotWorld.getFloorHeight() + 1,
-                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 - 1).getBlock();
+                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 - 1);
+    }
+
+    public CompletableFuture<Block> getSignBlockAsync() {
+        CompletableFuture<Block> future = new CompletableFuture<>();
+
+        Location signLoc = getSign();
+
+        PaperLib.getChunkAtAsync(getSign()).thenAccept(chunk -> {
+            Block signBlock = chunk.getBlock(signLoc.getBlockX() & 0xF, signLoc.getBlockY(), signLoc.getBlockZ() & 0xF);
+            future.complete(signBlock);
+        });
+
+        return future;
     }
 
     public void updateSign() {
-        Block signBlock = getSign();
-        signBlock.setType(Material.OAK_WALL_SIGN, false);
+        getSignBlockAsync().thenAccept(signBlock -> {
+            signBlock.setType(Material.OAK_WALL_SIGN, false);
 
-        Sign sign = (Sign) signBlock.getState();
-        sign.setLine(0, plotId.toString());
-        sign.setLine(1, JustPlots.getUsername(owner));
-        sign.setLine(3, getCreationDate());
-        sign.update();
+            Sign sign = (Sign) signBlock.getState();
+            sign.setLine(0, plotId.toString());
+            sign.setLine(1, JustPlots.getUsername(owner));
+            sign.setLine(3, getCreationDate());
+            sign.update();
+        });
+    }
+
+    public void clearSign() {
+        getSignBlockAsync().thenAccept(signBlock -> {
+            signBlock.setType(Material.AIR, false);
+        });
     }
 
     public void claimWalls() {
@@ -236,22 +256,24 @@ public class Plot implements Comparable<Plot> {
     }
 
     private void setWalls(BlockData block) {
+        ChunkBatcher chunkBatcher = new ChunkBatcher(Bukkit.getWorld(this.world));
+
         int fromx = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2;
         int fromz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2;
         int tox = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize() + 1;
         int toz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize() + 1;
 
-        World world = Bukkit.getWorld(this.world);
-
         for (int x = fromx; x <= tox; x++) {
-            world.getBlockAt(x, plotWorld.getFloorHeight() + 1, fromz).setBlockData(block);
-            world.getBlockAt(x, plotWorld.getFloorHeight() + 1, toz).setBlockData(block);
+            chunkBatcher.setBlock(x, plotWorld.getFloorHeight() + 1, fromz, block);
+            chunkBatcher.setBlock(x, plotWorld.getFloorHeight() + 1, toz, block);
         }
 
         for (int z = fromz; z <= toz; z++) {
-            world.getBlockAt(fromx, plotWorld.getFloorHeight() + 1, z).setBlockData(block);
-            world.getBlockAt(tox, plotWorld.getFloorHeight() + 1, z).setBlockData(block);
+            chunkBatcher.setBlock(fromx, plotWorld.getFloorHeight() + 1, z, block);
+            chunkBatcher.setBlock(tox, plotWorld.getFloorHeight() + 1, z, block);
         }
+
+        chunkBatcher.run();
     }
 
     public void reset() {

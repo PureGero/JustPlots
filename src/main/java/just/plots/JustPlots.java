@@ -182,11 +182,8 @@ public class JustPlots extends JavaPlugin {
     public static Plot claimPlot(String world, int x, int z, UUID owner) {
         Plot plot = createPlot(world, x, z, owner);
 
-        Bukkit.getScheduler().runTask(getPlugin(), () -> {
-            // Has to run in sync
-            plot.claimWalls();
-            plot.updateSign();
-        });
+        plot.claimWalls();
+        plot.updateSign();
 
         return plot;
     }

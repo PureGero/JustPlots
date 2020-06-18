@@ -47,10 +47,8 @@ public class ResetCommand extends SubCommand {
         plot.delete();
         plot.reset();
 
-        Bukkit.getScheduler().runTask(JustPlots.getPlugin(), () -> {
-            plot.unclaimWalls();
-            plot.getSign().setType(Material.AIR);
-        });
+        plot.unclaimWalls();
+        plot.clearSign();
 
         String name = senderUuid.equals(plot.getOwner()) ? "your" : JustPlots.getUsername(plot.getOwner()) + "'s";
         sender.sendMessage(ChatColor.GREEN + "Succesfully reset " + name
