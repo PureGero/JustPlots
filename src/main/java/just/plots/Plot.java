@@ -218,7 +218,7 @@ public class Plot implements Comparable<Plot> {
 
     public void updateSign() {
         Block signBlock = getSign();
-        signBlock.setType(Material.OAK_WALL_SIGN);
+        signBlock.setType(Material.OAK_WALL_SIGN, false);
 
         Sign sign = (Sign) signBlock.getState();
         sign.setLine(0, plotId.toString());

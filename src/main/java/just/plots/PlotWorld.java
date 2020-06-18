@@ -20,6 +20,8 @@ public class PlotWorld {
     private BlockData unclaimedWall = Material.QUARTZ_SLAB.createBlockData();
     private BlockData claimedWall = Material.SMOOTH_STONE_SLAB.createBlockData();
 
+    private int autoClaimDistance = 0;
+
     private final HashMap<PlotId, Plot> plots = new HashMap<>();
 
     public PlotWorld(String world) {
@@ -64,6 +66,11 @@ public class PlotWorld {
 
     public void removePlot(Plot plot) {
         plots.remove(plot.getId());
+
+        int distance = Math.max(Math.abs(plot.getId().getX()), Math.abs(plot.getId().getZ()));
+        if (distance < autoClaimDistance) {
+            autoClaimDistance = distance;
+        }
     }
 
     public void setPlotSize(int plotSize) {
@@ -108,6 +115,40 @@ public class PlotWorld {
 
     public void setClaimedWall(BlockData claimedWall) {
         this.claimedWall = claimedWall;
+    }
+
+    public PlotId nextAutoClaimPlot() {
+        while (true) {
+            for (int x = -autoClaimDistance; x <= autoClaimDistance; x++) {
+                PlotId id = new PlotId(x, autoClaimDistance);
+                if (getPlot(id) == null) {
+                    return id;
+                }
+            }
+
+            for (int z = autoClaimDistance; z >= -autoClaimDistance; z--) {
+                PlotId id = new PlotId(autoClaimDistance, z);
+                if (getPlot(id) == null) {
+                    return id;
+                }
+            }
+
+            for (int x = autoClaimDistance; x >= -autoClaimDistance; x--) {
+                PlotId id = new PlotId(x, -autoClaimDistance);
+                if (getPlot(id) == null) {
+                    return id;
+                }
+            }
+
+            for (int z = -autoClaimDistance; z <= autoClaimDistance; z++) {
+                PlotId id = new PlotId(-autoClaimDistance, z);
+                if (getPlot(id) == null) {
+                    return id;
+                }
+            }
+
+            autoClaimDistance++;
+        }
     }
 
     public void load(ConfigurationSection config) {

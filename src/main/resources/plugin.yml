@@ -10,6 +10,8 @@ commands:
     description: JustPlots command
     aliases: [p, plot, plots, jp, justplot, plotme]
 permissions:
+  justplots.auto:
+    description: Claim the next free plot
   justplots.claim:
     description: Claim a plot
   justplots.claim.other:
@@ -30,6 +32,7 @@ permissions:
     description: All the user permissions
     default: true
     children:
+      justplots.auto: true
       justplots.claim: true
       justplots.clear: true
       justplots.reset: true
