@@ -2,11 +2,13 @@ package just.plots;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
+import io.papermc.lib.PaperLib;
 import just.plots.commands.JustPlotsCommand;
 import just.plots.converters.PlotSquaredConverter;
 import just.plots.database.Database;
 import just.plots.database.PlotLoader;
 import just.plots.database.SQLiteDatabase;
+import just.plots.listeners.PaperListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -46,6 +48,10 @@ public class JustPlots extends JavaPlugin {
         new JustPlotsCommand(this);
 
         new PlotWorldGenerator();
+
+        if (PaperLib.isPaper()) {
+            new PaperListener(this);
+        }
     }
 
     @Override
