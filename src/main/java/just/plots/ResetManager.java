@@ -10,7 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 /**
- * A chunk based resetter. Spilts the works into chunks and resets a few chunks each tick
+ * A chunk based resetter. Spilts the work into chunks and resets a few chunks each tick
  */
 public class ResetManager {
     public static void reset(PlotWorld plotWorld, int fromx, int fromz, int tox, int toz) {

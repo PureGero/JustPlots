@@ -2,9 +2,7 @@ package just.plots.commands;
 
 import just.plots.JustPlots;
 import just.plots.Plot;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -12,10 +10,10 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.UUID;
 
-public class ResetCommand extends SubCommand {
+public class ClearCommand extends SubCommand {
 
-    public ResetCommand() {
-        super("/p reset", "Reset your plot", "reset", "delete");
+    public ClearCommand() {
+        super("/p clear", "Clear your plot", "clear");
     }
 
     @Override
@@ -25,7 +23,7 @@ public class ResetCommand extends SubCommand {
             return false;
         }
 
-        if (!sender.hasPermission("justplots.reset")) {
+        if (!sender.hasPermission("justplots.clear")) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to run that command");
             return false;
         }
@@ -39,21 +37,15 @@ public class ResetCommand extends SubCommand {
             return false;
         }
 
-        if (!senderUuid.equals(plot.getOwner()) && !sender.hasPermission("justplots.reset.other")) {
+        if (!senderUuid.equals(plot.getOwner()) && !sender.hasPermission("justplots.clear.other")) {
             sender.sendMessage(ChatColor.RED + JustPlots.getUsername(plot.getOwner()) + " owns that plot");
             return false;
         }
 
-        plot.delete();
         plot.reset();
 
-        Bukkit.getScheduler().runTask(JustPlots.getPlugin(), () -> {
-            plot.unclaimWalls();
-            plot.getSign().setType(Material.AIR);
-        });
-
         String name = senderUuid.equals(plot.getOwner()) ? "your" : JustPlots.getUsername(plot.getOwner()) + "'s";
-        sender.sendMessage(ChatColor.GREEN + "Succesfully reset " + name
+        sender.sendMessage(ChatColor.GREEN + "Succesfully cleared " + name
                 + " plot at " + plot);
 
         return true;
@@ -61,7 +53,7 @@ public class ResetCommand extends SubCommand {
 
     @Override
     public void onTabComplete(CommandSender sender, String[] args, List<String> tabCompletion) {
-        // Do nothing, /p reset takes no arguments
+        // Do nothing, /p clear takes no arguments
     }
 
 }

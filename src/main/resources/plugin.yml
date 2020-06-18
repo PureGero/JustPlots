@@ -14,6 +14,10 @@ permissions:
     description: Claim a plot
   justplots.claim.other:
     description: Claim a plot for another player
+  justplots.clear:
+    description: Clear a plot
+  justplots.clear.other:
+    description: Clear another player's plot
   justplots.dispose:
     description: Dispose a plot
   justplots.dispose.other:
@@ -27,11 +31,13 @@ permissions:
     default: true
     children:
       justplots.claim: true
+      justplots.clear: true
       justplots.reset: true
   justplots.admin:
     description: All the admin permissions
     children:
       justplots.claim.other: true
+      justplots.clear.other: true
       justplots.dispose: true
       justplots.dispose.other: true
       justplots.reset.other: true
