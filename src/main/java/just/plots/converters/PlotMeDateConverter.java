@@ -30,10 +30,9 @@ public class PlotMeDateConverter {
 
             convert(plotMeDir);
 
-            /*if (!plotMeDir.renameTo(new File(plotMeDir.getParentFile(), "PlotMe-Converted-To-JustPlots"))) {
-                TODO
+            if (!plotMeDir.renameTo(new File(plotMeDir.getParentFile(), "PlotMe-Converted-To-JustPlots"))) {
                 plots.getLogger().warning("Could not rename " + plotMeDir.getPath());
-            }*/
+            }
 
             plots.getLogger().info("Converted plot dates from PlotMe (took " + (System.currentTimeMillis() - timer) + "ms)");
         }
@@ -67,6 +66,7 @@ public class PlotMeDateConverter {
                     DataInputStream blobInputStream = new DataInputStream(new ByteArrayInputStream(results.getBytes("ownerId")));
                     UUID owner = new UUID(blobInputStream.readLong(), blobInputStream.readLong());
                     Date expiredDate = results.getDate("expireddate");
+
                     Plot plot = JustPlots.getPlot(world, x, z);
 
                     if (plot != null && plot.getOwner().equals(owner)) {

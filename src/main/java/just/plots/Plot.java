@@ -77,7 +77,7 @@ public class Plot implements Comparable<Plot> {
         try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement(
                 "UPDATE justplots_plots SET creation = ? WHERE world = ? AND x = ? AND z = ?"
         )) {
-            statement.setTimestamp(1, new Timestamp(creation));
+            statement.setTimestamp(1, new Timestamp(time));
             statement.setString(2, world);
             statement.setInt(3, x);
             statement.setInt(4, z);

@@ -26,10 +26,9 @@ public class PlotSquaredConverter {
 
             convert(plotSquaredDir);
 
-            /*if (!plotSquaredDir.renameTo(new File(plotSquaredDir.getParentFile(), "PlotSquared-Converted-To-JustPlots"))) {
-                TODO
+            if (!plotSquaredDir.renameTo(new File(plotSquaredDir.getParentFile(), "PlotSquared-Converted-To-JustPlots"))) {
                 plots.getLogger().warning("Could not rename " + plotSquaredDir.getPath());
-            }*/
+            }
 
             new PlotMeDateConverter(plots);
 

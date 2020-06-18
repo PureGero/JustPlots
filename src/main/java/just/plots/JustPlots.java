@@ -5,6 +5,7 @@ import com.earth2me.essentials.User;
 import just.plots.commands.JustPlotsCommand;
 import just.plots.converters.PlotSquaredConverter;
 import just.plots.database.Database;
+import just.plots.database.PlotLoader;
 import just.plots.database.SQLiteDatabase;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,6 +31,8 @@ public class JustPlots extends JavaPlugin {
 
         database = new SQLiteDatabase(new File(this.getDataFolder(), "plots.db"));
         database.createTables();
+
+        new PlotLoader(this);
 
         new PlotSquaredConverter(this);
 

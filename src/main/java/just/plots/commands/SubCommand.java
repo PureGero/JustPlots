@@ -16,6 +16,9 @@ public abstract class SubCommand {
         this.aliases = aliases;
     }
 
+    /**
+     * This will be run async, make sure to be thread safe!
+     */
     public abstract boolean onCommand(CommandSender sender, String label, String[] args);
 
     public abstract void onTabComplete(CommandSender sender, String[] args, List<String> tabCompletion);

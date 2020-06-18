@@ -56,5 +56,4 @@ public abstract class Database {
             e.printStackTrace();
         }
     }
-
 }
