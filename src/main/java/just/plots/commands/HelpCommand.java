@@ -14,7 +14,7 @@ public class HelpCommand extends SubCommand {
     private List<SubCommand> commands = new ArrayList<>();
 
     public HelpCommand() {
-        super("List all commands", "help");
+        super("/p help [page]", "List all commands", "help");
     }
 
     public void addCommand(SubCommand command) {
@@ -51,7 +51,7 @@ public class HelpCommand extends SubCommand {
 
         for (int i = page * 8 - 8; i < page * 8 && i < commands.size(); i++) {
             SubCommand command = commands.get(i);
-            String usage = "/p " + command.getName();
+            String usage = command.getUsage();
 
             sender.spigot().sendMessage(new ComponentBuilder(usage).color(ChatColor.AQUA)
                     .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(usage).create()))

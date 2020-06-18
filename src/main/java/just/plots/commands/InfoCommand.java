@@ -13,7 +13,7 @@ import java.util.UUID;
 public class InfoCommand extends SubCommand {
 
     public InfoCommand() {
-        super("Get info about the plot", "info", "i");
+        super("/p info", "Get info about the plot", "info", "i");
     }
 
     @Override

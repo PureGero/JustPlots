@@ -19,7 +19,7 @@ import java.util.Set;
 public class VisitCommand extends SubCommand {
 
     public VisitCommand() {
-        super("Vist a plot", "visit", "v", "home", "h", "tp");
+        super("/p visit [player/plot] [n]", "Vist a plot", "visit", "v", "home", "h", "tp");
     }
 
     @Override

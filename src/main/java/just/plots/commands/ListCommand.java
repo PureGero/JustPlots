@@ -14,7 +14,7 @@ import java.util.*;
 public class ListCommand extends SubCommand {
 
     public ListCommand() {
-        super("List your plots", "list", "l", "plots");
+        super("/p list [player] [world] [page]", "List your plots", "list", "l", "plots");
     }
 
     @Override

@@ -6,11 +6,13 @@ import java.util.List;
 
 public abstract class SubCommand {
 
+    private final String usage;
     private final String name;
     private final String description;
     private final String[] aliases;
 
-    public SubCommand(String description, String... aliases) {
+    public SubCommand(String usage, String description, String... aliases) {
+        this.usage = usage;
         this.name = aliases[0];
         this.description = description;
         this.aliases = aliases;
@@ -33,5 +35,9 @@ public abstract class SubCommand {
 
     public String[] getAliases() {
         return aliases;
+    }
+
+    public String getUsage() {
+        return usage;
     }
 }
