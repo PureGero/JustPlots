@@ -103,7 +103,7 @@ public class Plot implements Comparable<Plot> {
     }
 
     public boolean isAdded(UUID uuid) {
-        return added.contains(uuid);
+        return owner.equals(uuid) || added.contains(uuid);
     }
 
     public void addPlayer(UUID uuid) {

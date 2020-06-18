@@ -1,9 +1,6 @@
 package just.plots;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -18,6 +15,12 @@ public class PlotWorldGenerator extends ChunkGenerator {
             if (plotWorld.isPlotWorld() && Bukkit.getWorld(plotWorld.getWorld()) == null) {
                 World world = Bukkit.createWorld(new WorldCreator(plotWorld.getWorld()).generator(this));
                 world.setKeepSpawnInMemory(false);
+
+                world.setGameRule(GameRule.DISABLE_RAIDS, true);
+                world.setGameRule(GameRule.DO_FIRE_TICK, false);
+                world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+                world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+                world.setGameRule(GameRule.MOB_GRIEFING, false);
             }
         }
     }

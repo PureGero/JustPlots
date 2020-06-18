@@ -26,7 +26,7 @@ public class ResetManager {
                 int maxx = Math.min(cx << 4 | 15, tox);
                 int maxz = Math.min(cz << 4 | 15, toz);
 
-                Bukkit.getScheduler().runTaskLaterAsynchronously(JustPlots.getPlugin(), new ChunkToReset(plotWorld, minx, minz, maxx, maxz), (int) (i += 0.25));
+                Bukkit.getScheduler().runTaskLaterAsynchronously(JustPlots.getPlugin(), new ChunkToReset(plotWorld, minx, minz, maxx, maxz), (int) (i += 0.5));
             }
         }
 
