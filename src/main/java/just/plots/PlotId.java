@@ -1,17 +1,17 @@
 package just.plots;
 
-public class PlotID {
+public class PlotId {
     private final int x;
     private final int z;
 
-    public PlotID(int x, int z) {
+    public PlotId(int x, int z) {
         this.x = x;
         this.z = z;
     }
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof PlotID && ((PlotID) other).x == x && ((PlotID) other).z == z;
+        return other instanceof PlotId && ((PlotId) other).x == x && ((PlotId) other).z == z;
     }
 
     @Override
@@ -22,5 +22,13 @@ public class PlotID {
     @Override
     public String toString() {
         return x + ";" + z;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getZ() {
+        return z;
     }
 }

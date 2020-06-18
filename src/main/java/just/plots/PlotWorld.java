@@ -20,7 +20,7 @@ public class PlotWorld {
     private BlockData unclaimedWall = Material.QUARTZ_SLAB.createBlockData();
     private BlockData claimedWall = Material.SMOOTH_STONE_SLAB.createBlockData();
 
-    private final HashMap<PlotID, Plot> plots = new HashMap<>();
+    private final HashMap<PlotId, Plot> plots = new HashMap<>();
 
     public PlotWorld(String world) {
         this.world = world;
@@ -31,7 +31,11 @@ public class PlotWorld {
     }
 
     public Plot getPlot(int x, int z) {
-        return plots.get(new PlotID(x, z));
+        return getPlot(new PlotId(x, z));
+    }
+
+    public Plot getPlot(PlotId plotID) {
+        return plots.get(plotID);
     }
 
     public void addPlot(Plot plot) {

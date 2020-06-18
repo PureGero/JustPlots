@@ -2,6 +2,10 @@ package just.plots;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -12,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Plot implements Comparable<Plot> {
-    private final PlotID plotId;
+    private final PlotId plotId;
     private final String world;
     private final int x;
     private final int z;
@@ -23,7 +27,7 @@ public class Plot implements Comparable<Plot> {
     private final HashSet<UUID> added = new HashSet<>();
 
     public Plot(String world, int x, int z, UUID owner, long creation) {
-        this.plotId = new PlotID(x, z);
+        this.plotId = new PlotId(x, z);
         this.world = world;
         this.x = x;
         this.z = z;
@@ -167,7 +171,7 @@ public class Plot implements Comparable<Plot> {
         return (int) diff;
     }
 
-    public PlotID getId() {
+    public PlotId getId() {
         return plotId;
     }
 
@@ -202,5 +206,42 @@ public class Plot implements Comparable<Plot> {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(getCreation());
         return calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DATE);
+    }
+
+    public Block getSign() {
+        return new Location(Bukkit.getWorld(world),
+                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0,
+                plotWorld.getFloorHeight() + 1,
+                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 - 1).getBlock();
+    }
+
+    public void updateSign() {
+        Block signBlock = getSign();
+        signBlock.setType(Material.OAK_WALL_SIGN);
+
+        Sign sign = (Sign) signBlock.getState();
+        sign.setLine(0, plotId.toString());
+        sign.setLine(1, JustPlots.getUsername(owner));
+        sign.setLine(3, getCreationDate());
+        sign.update();
+    }
+
+    public void claimWalls() {
+        int fromx = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2;
+        int fromz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2;
+        int tox = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize() + 1;
+        int toz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize() + 1;
+
+        World world = Bukkit.getWorld(this.world);
+
+        for (int x = fromx; x <= tox; x++) {
+            world.getBlockAt(x, plotWorld.getFloorHeight() + 1, fromz).setBlockData(plotWorld.getClaimedWall());
+            world.getBlockAt(x, plotWorld.getFloorHeight() + 1, toz).setBlockData(plotWorld.getClaimedWall());
+        }
+
+        for (int z = fromz; z <= toz; z++) {
+            world.getBlockAt(fromx, plotWorld.getFloorHeight() + 1, z).setBlockData(plotWorld.getClaimedWall());
+            world.getBlockAt(tox, plotWorld.getFloorHeight() + 1, z).setBlockData(plotWorld.getClaimedWall());
+        }
     }
 }

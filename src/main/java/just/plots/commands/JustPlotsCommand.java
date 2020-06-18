@@ -2,6 +2,7 @@ package just.plots.commands;
 
 import just.plots.JustPlots;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,6 +27,7 @@ public class JustPlotsCommand implements CommandExecutor, TabCompleter {
         // Add the commands in the order they will appear in /p help
         addCommand(new InfoCommand());
         addCommand(new ListCommand());
+        addCommand(new ClaimCommand());
         addCommand(new VisitCommand());
         addCommand(helpCommand);
     }
@@ -46,7 +48,14 @@ public class JustPlotsCommand implements CommandExecutor, TabCompleter {
             if (subCommand != null) {
                 String[] newArgs = new String[args.length - 1];
                 System.arraycopy(args, 1, newArgs, 0, newArgs.length);
-                Bukkit.getScheduler().runTaskAsynchronously(plots, () -> subCommand.onCommand(sender, args[0], newArgs));
+                Bukkit.getScheduler().runTaskAsynchronously(plots, () -> {
+                    try {
+                        subCommand.onCommand(sender, args[0], newArgs);
+                    } catch (Exception e) {
+                        sender.sendMessage(ChatColor.RED + "Unhandled expection: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
                 return true;
             }
         }

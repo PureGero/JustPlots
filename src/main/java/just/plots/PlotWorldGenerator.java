@@ -98,13 +98,9 @@ public class PlotWorldGenerator extends ChunkGenerator {
                 if (dx <= roadSize && dz <= roadSize) {
                     double distance = Math.sqrt(dx * dx + dz * dz) / sqrt2;
                     block = (int) Math.floor(distance) % 2;
-                } else if (dx < roadSize - 1) {
+                } else if (dx < roadSize - 1 || dz < roadSize - 1) {
                     block = 0;
-                } else if (dx < roadSize) {
-                    block = 1;
-                } else if (dz < roadSize - 1) {
-                    block = 0;
-                } else if (dz < roadSize) {
+                } else if (dx < roadSize || dz < roadSize) {
                     block = 1;
                 }
 

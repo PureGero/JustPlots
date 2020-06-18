@@ -78,7 +78,11 @@ public class JustPlots extends JavaPlugin {
     }
 
     public static Plot getPlot(String world, int x, int z) {
-        return getPlotWorld(world).getPlot(x, z);
+        return getPlot(world, new PlotId(x, z));
+    }
+
+    public static Plot getPlot(String world, PlotId id) {
+        return getPlotWorld(world).getPlot(id);
     }
 
     public static Plot getPlotAt(Entity entity) {
@@ -86,6 +90,20 @@ public class JustPlots extends JavaPlugin {
     }
 
     public static Plot getPlotAt(Location location) {
+        PlotId id = getPlotIdAt(location);
+
+        if (id == null) {
+            return null;
+        }
+
+        return getPlotWorld(location.getWorld()).getPlot(id.getX(), id.getZ());
+    }
+
+    public static PlotId getPlotIdAt(Entity entity) {
+        return getPlotIdAt(entity.getLocation());
+    }
+
+    public static PlotId getPlotIdAt(Location location) {
         if (location.getWorld() == null) {
             return null;
         }
@@ -108,7 +126,7 @@ public class JustPlots extends JavaPlugin {
             return null;
         }
 
-        return world.getPlot(x, z);
+        return new PlotId(x, z);
     }
 
     public static Set<Plot> getPlotsIfCached(UUID uuid) {
@@ -154,6 +172,22 @@ public class JustPlots extends JavaPlugin {
     public static Plot createPlot(String world, int x, int z, UUID owner, long creation) {
         Plot plot = new Plot(world, x, z, owner, creation);
         plot.createInDatabase();
+        return plot;
+    }
+
+    public static Plot claimPlot(String world, PlotId id, UUID owner) {
+        return claimPlot(world, id.getX(), id.getZ(), owner);
+    }
+
+    public static Plot claimPlot(String world, int x, int z, UUID owner) {
+        Plot plot = createPlot(world, x, z, owner);
+
+        Bukkit.getScheduler().runTask(getPlugin(), () -> {
+            // Has to run in sync
+            plot.claimWalls();
+            plot.updateSign();
+        });
+
         return plot;
     }
 
