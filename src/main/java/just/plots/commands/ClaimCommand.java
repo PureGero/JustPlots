@@ -35,7 +35,7 @@ public class ClaimCommand extends SubCommand {
         Plot plot = JustPlots.getPlot(world, id);
 
         if (plot != null) {
-            sender.sendMessage(ChatColor.RED + JustPlots.getUsername(plot.getOwner()) + " already owns that plot!");
+            sender.sendMessage(ChatColor.RED + JustPlots.getUsername(plot.getOwner()) + " already owns that plot");
             return false;
         }
 
