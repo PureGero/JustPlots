@@ -2,7 +2,6 @@ package just.plots.commands;
 
 import just.plots.JustPlots;
 import just.plots.Plot;
-import just.plots.PlotId;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;

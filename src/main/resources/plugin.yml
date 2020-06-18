@@ -10,12 +10,23 @@ commands:
     description: JustPlots command
     aliases: [p, plot, plots, jp, justplot, plotme]
 permissions:
+  justplots.claim:
+    description: Claim a plot
+  justplots.claim.other:
+    description: Claim a plot for another player
   justplots.dispose:
     description: Dispose a plot
   justplots.dispose.other:
     description: Dispose another player's plot
+  justplots.user:
+    description: All the user permissions
+    default: true
+    children:
+      justplots.claim: true
   justplots.admin:
     description: All the admin permissions
     children:
+      justplots.claim.other: true
       justplots.dispose: true
       justplots.dispose.other: true
+      justplots.user: true

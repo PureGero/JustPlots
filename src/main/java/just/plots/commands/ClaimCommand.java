@@ -3,18 +3,18 @@ package just.plots.commands;
 import just.plots.JustPlots;
 import just.plots.Plot;
 import just.plots.PlotId;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 public class ClaimCommand extends SubCommand {
 
     public ClaimCommand() {
-        super("/p claim", "Claim a plot", "claim");
+        super("/p claim [player]", "Claim a plot", "claim");
     }
 
     @Override
@@ -22,6 +22,17 @@ public class ClaimCommand extends SubCommand {
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Only players can execute this command");
             return false;
+        }
+
+        if (!sender.hasPermission("justplots.claim")) {
+            sender.sendMessage(ChatColor.RED + "You do not have permission to run that command");
+            return false;
+        }
+
+        OfflinePlayer claimAs = (OfflinePlayer) sender;
+
+        if (args.length >= 1 && sender.hasPermission("justplots.claim.other")) {
+            claimAs = Bukkit.getOfflinePlayer(args[0]);
         }
 
         String world = ((Player) sender).getWorld().getName();
@@ -39,16 +50,22 @@ public class ClaimCommand extends SubCommand {
             return false;
         }
 
-        plot = JustPlots.claimPlot(world, id, ((Player) sender).getUniqueId());
+        plot = JustPlots.claimPlot(world, id, claimAs.getUniqueId());
 
-        sender.sendMessage(ChatColor.GREEN + "Succesfully claimed plot " + plot);
+        sender.sendMessage(ChatColor.GREEN + "Succesfully claimed plot " + plot + (claimAs != sender ? " for " + claimAs.getName() : ""));
 
         return true;
     }
 
     @Override
     public void onTabComplete(CommandSender sender, String[] args, List<String> tabCompletion) {
-        // Do nothing, /p claim takes no arguments
+        if (args.length == 1) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
+                    tabCompletion.add(player.getName());
+                }
+            }
+        }
     }
 
 }
