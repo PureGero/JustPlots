@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -33,9 +32,7 @@ public class InfoCommand extends SubCommand {
 
         sender.sendMessage(ChatColor.AQUA + "Plot " + plot.toString() + " belongs to " + JustPlots.getUsername(plot.getOwner()));
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(plot.getCreation());
-        sender.sendMessage(ChatColor.DARK_AQUA + "Created on: " + ChatColor.WHITE + calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DATE));
+        sender.sendMessage(ChatColor.DARK_AQUA + "Created on: " + ChatColor.WHITE + plot.getCreationDate());
 
         StringBuilder added = new StringBuilder(ChatColor.DARK_AQUA + "Added players: ");
 

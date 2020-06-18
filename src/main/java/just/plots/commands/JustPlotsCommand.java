@@ -25,6 +25,7 @@ public class JustPlotsCommand implements CommandExecutor, TabCompleter {
 
         // Add the commands in the order they will appear in /p help
         addCommand(new InfoCommand());
+        addCommand(new ListCommand());
         addCommand(new VisitCommand());
         addCommand(helpCommand);
     }

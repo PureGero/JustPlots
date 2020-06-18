@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -195,5 +196,11 @@ public class Plot implements Comparable<Plot> {
                 (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() / 2.0 + 0.5,
                 plotWorld.getFloorHeight() + 1,
                 (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 - 0.5);
+    }
+
+    public String getCreationDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(getCreation());
+        return calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DATE);
     }
 }

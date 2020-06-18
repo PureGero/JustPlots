@@ -1,6 +1,5 @@
 package just.plots.commands;
 
-import com.earth2me.essentials.User;
 import io.papermc.lib.PaperLib;
 import just.plots.JustPlots;
 import just.plots.Plot;
@@ -12,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Iterator;
 import java.util.List;
@@ -100,7 +98,7 @@ public class VisitCommand extends SubCommand {
                 i = 0;
             }
 
-            if (plots.size() == 0) {
+            if (plots.isEmpty()) {
                 sender.sendMessage(ChatColor.RED + "You have no plots. Get one with /p auto");
                 return false;
             }
