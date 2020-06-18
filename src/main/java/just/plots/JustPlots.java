@@ -44,6 +44,8 @@ public class JustPlots extends JavaPlugin {
         new PlotLoader(this);
 
         new JustPlotsCommand(this);
+
+        new PlotWorldGenerator();
     }
 
     @Override
@@ -135,6 +137,10 @@ public class JustPlots extends JavaPlugin {
         playerPlotListCache.put(uuid, plots);
 
         return plots;
+    }
+
+    public static Collection<PlotWorld> getPlotWorlds() {
+        return plotWorlds.values();
     }
 
     public static Database getDatabase() {

@@ -26,6 +26,10 @@ public class PlotWorld {
         this.world = world;
     }
 
+    public String getWorld() {
+        return world;
+    }
+
     public Plot getPlot(int x, int z) {
         return plots.get(new PlotID(x, z));
     }
