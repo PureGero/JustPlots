@@ -2,6 +2,7 @@ package just.plots.database;
 
 import just.plots.JustPlots;
 import just.plots.Plot;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +17,20 @@ public class PlotLoader implements Runnable {
     public PlotLoader(JustPlots plots) {
         this.plots = plots;
 
+        loadPlots();
+
         plots.getServer().getScheduler().runTaskAsynchronously(plots, this);
+    }
+
+    private void loadPlots() {
+        ConfigurationSection worldsSection = plots.getConfig().getConfigurationSection("worlds");
+
+        if (worldsSection != null) {
+            for (String name : worldsSection.getKeys(false)) {
+                ConfigurationSection config = worldsSection.getConfigurationSection(name);
+                JustPlots.getPlotWorld(name).load(config);
+            }
+        }
     }
 
     @Override

@@ -1,8 +1,12 @@
 package just.plots.converters;
 
+import just.plots.PlotWorld;
 import just.plots.database.Database;
 import just.plots.JustPlots;
 import just.plots.database.SQLiteDatabase;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.sql.PreparedStatement;
@@ -37,6 +41,8 @@ public class PlotSquaredConverter {
     }
 
     private void convert(File plotSquaredDir) {
+        loadWorlds(plotSquaredDir);
+
         try {
             Database database = new SQLiteDatabase(new File(plotSquaredDir, "storage.db"));
 
@@ -49,6 +55,37 @@ public class PlotSquaredConverter {
             database.closeConnection();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void loadWorlds(File plotSquaredDir) {
+        File worldsYml = new File(plotSquaredDir, "config/worlds.yml");
+
+        YamlConfiguration worlds = YamlConfiguration.loadConfiguration(worldsYml);
+
+        ConfigurationSection worldsSection = worlds.getConfigurationSection("worlds");
+
+        if (worldsSection != null) {
+            for (String name : worldsSection.getKeys(false)) {
+                plots.getLogger().info("Converting plot world " + name + "'s settings...");
+
+                try {
+                    ConfigurationSection config = worldsSection.getConfigurationSection(name);
+                    PlotWorld plotWorld = JustPlots.getPlotWorld(name);
+
+                    plotWorld.setPlotSize(config.getInt("plot.size"));
+                    plotWorld.setRoadSize(config.getInt("road.width"));
+                    plotWorld.setFloorHeight(config.getInt("plot.height"));
+                    plotWorld.setRoadInnerBlock(Bukkit.createBlockData(config.getString("road.block").replace(":100.0", "")));
+                    plotWorld.setRoadOuterBlock(Bukkit.createBlockData(config.getString("road.block").replace(":100.0", "")));
+                    plotWorld.setUnclaimedWall(Bukkit.createBlockData(config.getString("wall.block").replace(":100.0", "")));
+                    plotWorld.setClaimedWall(Bukkit.createBlockData(config.getString("wall.block_claimed").replace(":100.0", "")));
+
+                    plotWorld.save();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

@@ -20,24 +20,30 @@ import java.util.*;
 
 public class JustPlots extends JavaPlugin {
 
+    private static JustPlots plugin;
+
     private static Database database;
 
     private static HashMap<String, PlotWorld> plotWorlds = new HashMap<>();
 
     private static HashMap<UUID, TreeSet<Plot>> playerPlotListCache = new HashMap<>();
 
+    public static JustPlots getPlugin() {
+        return plugin;
+    }
+
     @Override
     public void onEnable() {
+        plugin = this;
 
         database = new SQLiteDatabase(new File(this.getDataFolder(), "plots.db"));
         database.createTables();
 
-        new PlotLoader(this);
-
         new PlotSquaredConverter(this);
 
-        new JustPlotsCommand(this);
+        new PlotLoader(this);
 
+        new JustPlotsCommand(this);
     }
 
     @Override
