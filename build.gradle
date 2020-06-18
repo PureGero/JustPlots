@@ -25,7 +25,7 @@ repositories {
   }
 }
 
-version = "0.1"
+version = "0.1.0"
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
@@ -53,8 +53,20 @@ buildscript {
   }
 }
 
+processResources {
+  from("src/main/resources") {
+    include("plugin.yml")
+    expand(
+            name: project.name,
+            version: project.version
+    )
+  }
+}
+
 apply plugin: "com.github.johnrengelman.shadow"
 
 shadowJar {
   relocate 'io.papermc.lib', 'just.plots.paperlib'
 }
+
+tasks.build.dependsOn tasks.shadowJar

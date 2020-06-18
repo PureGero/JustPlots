@@ -1,5 +1,5 @@
-name: JustPlots
-version: 0.1.0
+name: ${name}
+version: ${version}
 main: just.plots.JustPlots
 author: PureGero
 api-version: 1.13

@@ -1,6 +1,7 @@
 package just.plots.commands;
 
 import just.plots.JustPlots;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,15 +13,19 @@ import java.util.List;
 
 public class JustPlotsCommand implements CommandExecutor, TabCompleter {
 
+    private final JustPlots plots;
     private HashMap<String, SubCommand> commands = new HashMap<>();
     private HelpCommand helpCommand = new HelpCommand();
 
     public JustPlotsCommand(JustPlots plots) {
+        this.plots = plots;
+
         plots.getCommand("justplots").setExecutor(this);
         plots.getCommand("justplots").setTabCompleter(this);
 
         // Add the commands in the order they will appear in /p help
         addCommand(new InfoCommand());
+        addCommand(new VisitCommand());
         addCommand(helpCommand);
     }
 
@@ -40,7 +45,8 @@ public class JustPlotsCommand implements CommandExecutor, TabCompleter {
             if (subCommand != null) {
                 String[] newArgs = new String[args.length - 1];
                 System.arraycopy(args, 1, newArgs, 0, newArgs.length);
-                return subCommand.onCommand(sender, args[0], newArgs);
+                Bukkit.getScheduler().runTaskAsynchronously(plots, () -> subCommand.onCommand(sender, args[0], newArgs));
+                return true;
             }
         }
 

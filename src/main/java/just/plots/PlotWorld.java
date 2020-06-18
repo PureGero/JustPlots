@@ -1,5 +1,6 @@
 package just.plots;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class PlotWorld {
@@ -7,6 +8,7 @@ public class PlotWorld {
 
     private int plotSize = 32;
     private int roadSize = 7;
+    private int floorHeight = 64;
 
     private final HashMap<PlotID, Plot> plots = new HashMap<>();
 
@@ -32,5 +34,13 @@ public class PlotWorld {
 
     public int getRoadSize() {
         return roadSize;
+    }
+
+    public int getFloorHeight() {
+        return floorHeight;
+    }
+
+    public Collection<Plot> getPlots() {
+        return plots.values();
     }
 }

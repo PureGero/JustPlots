@@ -10,11 +10,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class JustPlots extends JavaPlugin {
@@ -83,8 +86,8 @@ public class JustPlots extends JavaPlugin {
             return null;
         }
 
-        int x = location.getBlockX() / (world.getPlotSize() + world.getRoadSize()) + 1;
-        int z = location.getBlockZ() / (world.getPlotSize() + world.getRoadSize()) + 1;
+        int x = location.getBlockX() / (world.getPlotSize() + world.getRoadSize());
+        int z = location.getBlockZ() / (world.getPlotSize() + world.getRoadSize());
 
         int dx = Math.floorMod(location.getBlockX(), (world.getPlotSize() + world.getRoadSize()));
         int dz = Math.floorMod(location.getBlockZ(), (world.getPlotSize() + world.getRoadSize()));
@@ -96,6 +99,25 @@ public class JustPlots extends JavaPlugin {
         }
 
         return world.getPlot(x, z);
+    }
+
+    public static List<Plot> getPlots(Player player) {
+        return getPlots(player.getUniqueId());
+    }
+
+    public static List<Plot> getPlots(UUID uuid) {
+        // TODO Pre-compute on join and during plot creation
+        List<Plot> plots = new ArrayList<>();
+
+        for (PlotWorld world : plotWorlds.values()) {
+            for (Plot plot : world.getPlots()) {
+                if (plot.getOwner().equals(uuid)) {
+                    plots.add(plot);
+                }
+            }
+        }
+
+        return plots;
     }
 
     public static Database getDatabase() {

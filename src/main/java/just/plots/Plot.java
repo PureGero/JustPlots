@@ -1,5 +1,6 @@
 package just.plots;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.sql.PreparedStatement;
@@ -120,5 +121,12 @@ public class Plot {
 
     public long getCreation() {
         return creation;
+    }
+
+    public Location getHome() {
+        return new Location(Bukkit.getWorld(world),
+                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() / 2.0 + 0.5,
+                plotWorld.getFloorHeight() + 1,
+                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 - 0.5);
     }
 }
