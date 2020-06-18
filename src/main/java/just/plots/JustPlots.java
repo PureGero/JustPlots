@@ -15,16 +15,15 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class JustPlots extends JavaPlugin {
 
     private static Database database;
 
     private static HashMap<String, PlotWorld> plotWorlds = new HashMap<>();
+
+    private static HashMap<UUID, TreeSet<Plot>> playerPlotListCache = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -86,8 +85,8 @@ public class JustPlots extends JavaPlugin {
             return null;
         }
 
-        int x = location.getBlockX() / (world.getPlotSize() + world.getRoadSize());
-        int z = location.getBlockZ() / (world.getPlotSize() + world.getRoadSize());
+        int x = (int) Math.floor((double) location.getBlockX() / (world.getPlotSize() + world.getRoadSize()));
+        int z = (int) Math.floor((double) location.getBlockZ() / (world.getPlotSize() + world.getRoadSize()));
 
         int dx = Math.floorMod(location.getBlockX(), (world.getPlotSize() + world.getRoadSize()));
         int dz = Math.floorMod(location.getBlockZ(), (world.getPlotSize() + world.getRoadSize()));
@@ -101,13 +100,20 @@ public class JustPlots extends JavaPlugin {
         return world.getPlot(x, z);
     }
 
-    public static List<Plot> getPlots(Player player) {
+    public static Set<Plot> getPlotsIfCached(UUID uuid) {
+        return playerPlotListCache.get(uuid);
+    }
+
+    public static Set<Plot> getPlots(Player player) {
         return getPlots(player.getUniqueId());
     }
 
-    public static List<Plot> getPlots(UUID uuid) {
-        // TODO Pre-compute on join and during plot creation
-        List<Plot> plots = new ArrayList<>();
+    public static Set<Plot> getPlots(UUID uuid) {
+        if (playerPlotListCache.containsKey(uuid)) {
+            return playerPlotListCache.get(uuid);
+        }
+
+        TreeSet<Plot> plots = new TreeSet<>();
 
         for (PlotWorld world : plotWorlds.values()) {
             for (Plot plot : world.getPlots()) {
@@ -116,6 +122,8 @@ public class JustPlots extends JavaPlugin {
                 }
             }
         }
+
+        playerPlotListCache.put(uuid, plots);
 
         return plots;
     }

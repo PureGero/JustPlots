@@ -10,13 +10,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class Plot {
+public class Plot implements Comparable<Plot> {
     private final PlotID plotId;
     private final String world;
     private final int x;
     private final int z;
     private final UUID owner;
-    private final long creation;
+    private long creation;
     private final PlotWorld plotWorld;
 
     private final HashSet<UUID> added = new HashSet<>();
@@ -31,6 +31,11 @@ public class Plot {
 
         this.plotWorld = JustPlots.getPlotWorld(world);
         this.plotWorld.addPlot(this);
+
+        Set<Plot> playerPlots = JustPlots.getPlotsIfCached(owner);
+        if (playerPlots != null) {
+            playerPlots.add(this);
+        }
     }
 
     public void createInDatabase() {
@@ -43,6 +48,49 @@ public class Plot {
             statement.setString(4, owner.toString());
             statement.setTimestamp(5, new Timestamp(creation));
             statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void delete() {
+        try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement(
+                "DELETE FROM justplots_plots WHERE world = ? AND x = ? AND z = ?"
+        )) {
+            statement.setString(1, world);
+            statement.setInt(2, x);
+            statement.setInt(3, z);
+            statement.executeUpdate();
+
+            Set<Plot> playerPlots = JustPlots.getPlotsIfCached(owner);
+            if (playerPlots != null) {
+                playerPlots.remove(this);
+            }
+
+            plotWorld.removePlot(this);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setCreation(long time) {
+        try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement(
+                "UPDATE justplots_plots SET creation = ? WHERE world = ? AND x = ? AND z = ?"
+        )) {
+            statement.setTimestamp(1, new Timestamp(creation));
+            statement.setString(2, world);
+            statement.setInt(3, x);
+            statement.setInt(4, z);
+            statement.executeUpdate();
+
+            creation = time;
+
+            Set<Plot> playerPlots = JustPlots.getPlotsIfCached(owner);
+            if (playerPlots != null) {
+                // Re-add it to fix ordering
+                playerPlots.remove(this);
+                playerPlots.add(this);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -97,6 +145,25 @@ public class Plot {
     @Override
     public boolean equals(Object other) {
         return other instanceof Plot && ((Plot) other).world.equals(world) && ((Plot) other).plotId.equals(plotId);
+    }
+
+    @Override
+    public int compareTo(Plot other) {
+        long diff = creation - other.creation;
+
+        if (diff > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        }
+
+        if (diff < Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
+        }
+
+        if (diff == 0 && !equals(other)) {
+            return hashCode() - other.hashCode();
+        }
+
+        return (int) diff;
     }
 
     public PlotID getId() {

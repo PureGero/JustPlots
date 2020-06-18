@@ -8,4 +8,4 @@ website: https://github.com/PureGero/JustPlots
 commands:
     justplots:
         description: JustPlots command
-        aliases: [p, plot, plots, jp, justplot]
+        aliases: [p, plot, plots, jp, justplot, plotme]

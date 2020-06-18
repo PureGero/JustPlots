@@ -43,4 +43,8 @@ public class PlotWorld {
     public Collection<Plot> getPlots() {
         return plots.values();
     }
+
+    public void removePlot(Plot plot) {
+        plots.remove(plot.getId());
+    }
 }

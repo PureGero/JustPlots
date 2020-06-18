@@ -14,7 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class VisitCommand extends SubCommand {
 
@@ -29,8 +31,8 @@ public class VisitCommand extends SubCommand {
             return false;
         }
 
-        String format = "Teleport to your plot #%d";
-        List<Plot> plots = JustPlots.getPlots((Player) sender);
+        String format = "Teleported to your plot #%d";
+        Set<Plot> plots = JustPlots.getPlots((Player) sender);
         Plot plot = null;
 
         int i = Integer.MIN_VALUE;
@@ -69,7 +71,7 @@ public class VisitCommand extends SubCommand {
                     }
 
                     plot = JustPlots.getPlot(world, x, z);
-                    format = "Teleport to plot " + plot;
+                    format = "Teleported to plot " + plot;
 
                     if (plot == null) {
                         sender.sendMessage(ChatColor.RED + "Invalid plot '" + args[0] + "'");
@@ -78,16 +80,16 @@ public class VisitCommand extends SubCommand {
                 } else {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
 
-                    List<Plot> playerPlots = JustPlots.getPlots(player.getUniqueId());
+                    Set<Plot> playerPlots = JustPlots.getPlots(player.getUniqueId());
 
-                    if (playerPlots.size() == 0) {
+                    if (playerPlots.isEmpty()) {
                         if (i == Integer.MIN_VALUE || args.length >= 2) {
                             sender.sendMessage(ChatColor.RED + player.getName() + " has no plots");
                             return false;
                         }
                     } else {
                         plots = playerPlots;
-                        format = "Teleport to " + player.getName() + "'s plot #%d";
+                        format = "Teleported to " + player.getName() + "'s plot #%d";
                     }
                 }
             }
@@ -108,7 +110,9 @@ public class VisitCommand extends SubCommand {
                 return false;
             }
 
-            plot = plots.get(i);
+            Iterator<Plot> iterator = plots.iterator();
+            for (int j = 0; j < i; j++) iterator.next();
+            plot = iterator.next();
         }
 
         Location location = plot.getHome();

@@ -26,9 +26,12 @@ public class PlotSquaredConverter {
 
             convert(plotSquaredDir);
 
-            if (!plotSquaredDir.renameTo(new File(plotSquaredDir.getParentFile(), "PlotSquared-Converted-To-JustPlots"))) {
+            /*if (!plotSquaredDir.renameTo(new File(plotSquaredDir.getParentFile(), "PlotSquared-Converted-To-JustPlots"))) {
+                TODO
                 plots.getLogger().warning("Could not rename " + plotSquaredDir.getPath());
-            }
+            }*/
+
+            new PlotMeDateConverter(plots);
 
             plots.getLogger().info("Converted plots from PlotSquared (took " + (System.currentTimeMillis() - timer) + "ms)");
         }
@@ -60,8 +63,8 @@ public class PlotSquaredConverter {
 
             while (results.next()) {
                 String world = results.getString("world");
-                int x = results.getInt("plot_id_x");
-                int z = results.getInt("plot_id_z");
+                int x = results.getInt("plot_id_x") - 1;
+                int z = results.getInt("plot_id_z") - 1;
                 String owner = results.getString("owner");
                 Timestamp timestamp = results.getTimestamp("timestamp");
                 try {
@@ -88,8 +91,8 @@ public class PlotSquaredConverter {
 
             while (results.next()) {
                 String world = results.getString("world");
-                int x = results.getInt("plot_id_x");
-                int z = results.getInt("plot_id_z");
+                int x = results.getInt("plot_id_x") - 1;
+                int z = results.getInt("plot_id_z") - 1;
                 String uuid = results.getString("user_uuid");
                 try {
                     JustPlots.getPlot(world, x, z).addPlayer(UUID.fromString(uuid));
@@ -115,8 +118,8 @@ public class PlotSquaredConverter {
 
             while (results.next()) {
                 String world = results.getString("world");
-                int x = results.getInt("plot_id_x");
-                int z = results.getInt("plot_id_z");
+                int x = results.getInt("plot_id_x") - 1;
+                int z = results.getInt("plot_id_z") - 1;
                 String uuid = results.getString("user_uuid");
                 try {
                     JustPlots.getPlot(world, x, z).addPlayer(UUID.fromString(uuid));
