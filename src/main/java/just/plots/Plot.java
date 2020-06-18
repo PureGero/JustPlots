@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -227,6 +228,14 @@ public class Plot implements Comparable<Plot> {
     }
 
     public void claimWalls() {
+        setWalls(plotWorld.getClaimedWall());
+    }
+
+    public void unclaimWalls() {
+        setWalls(plotWorld.getUnclaimedWall());
+    }
+
+    private void setWalls(BlockData block) {
         int fromx = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2;
         int fromz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2;
         int tox = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize() + 1;
@@ -235,13 +244,22 @@ public class Plot implements Comparable<Plot> {
         World world = Bukkit.getWorld(this.world);
 
         for (int x = fromx; x <= tox; x++) {
-            world.getBlockAt(x, plotWorld.getFloorHeight() + 1, fromz).setBlockData(plotWorld.getClaimedWall());
-            world.getBlockAt(x, plotWorld.getFloorHeight() + 1, toz).setBlockData(plotWorld.getClaimedWall());
+            world.getBlockAt(x, plotWorld.getFloorHeight() + 1, fromz).setBlockData(block);
+            world.getBlockAt(x, plotWorld.getFloorHeight() + 1, toz).setBlockData(block);
         }
 
         for (int z = fromz; z <= toz; z++) {
-            world.getBlockAt(fromx, plotWorld.getFloorHeight() + 1, z).setBlockData(plotWorld.getClaimedWall());
-            world.getBlockAt(tox, plotWorld.getFloorHeight() + 1, z).setBlockData(plotWorld.getClaimedWall());
+            world.getBlockAt(fromx, plotWorld.getFloorHeight() + 1, z).setBlockData(block);
+            world.getBlockAt(tox, plotWorld.getFloorHeight() + 1, z).setBlockData(block);
         }
+    }
+
+    public void reset() {
+        int fromx = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + 1;
+        int fromz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + 1;
+        int tox = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize();
+        int toz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize();
+
+        ResetManager.reset(plotWorld, fromx, fromz, tox, toz);
     }
 }
