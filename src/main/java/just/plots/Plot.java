@@ -195,7 +195,7 @@ public class Plot implements Comparable<Plot> {
         return new Location(Bukkit.getWorld(world),
                 (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() / 2.0 + 0.5,
                 plotWorld.getFloorHeight() + 1,
-                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 - 0.5);
+                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 - 1);
     }
 
     public String getCreationDate() {
