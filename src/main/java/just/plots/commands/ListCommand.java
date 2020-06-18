@@ -2,6 +2,9 @@ package just.plots.commands;
 
 import just.plots.JustPlots;
 import just.plots.Plot;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -106,7 +109,12 @@ public class ListCommand extends SubCommand {
 
         for (int i = page * 10; i < page * 10 + 10 && i < plotList.size(); i++) {
             Plot plot = plotList.get(i);
-            sender.sendMessage(ChatColor.DARK_AQUA + "" + (i + 1) + ") " + plot + ": " + ChatColor.WHITE + plot.getCreationDate());
+            String tp = "/p visit " + plot;
+
+            sender.spigot().sendMessage(new ComponentBuilder((i + 1) + ") " + plot + ": ").color(net.md_5.bungee.api.ChatColor.DARK_AQUA)
+                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(tp).create()))
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tp))
+                    .append(plot.getCreationDate()).reset().create());
         }
 
         return true;
