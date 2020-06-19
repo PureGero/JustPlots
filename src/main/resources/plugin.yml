@@ -10,6 +10,10 @@ commands:
     description: JustPlots command
     aliases: [p, plot, plots, jp, justplot, plotme]
 permissions:
+  justplots.add:
+    description: Add a player to your plot
+  justplots.add.other:
+    description: Add a player to another player's plot
   justplots.auto:
     description: Claim the next free plot
   justplots.claim:
@@ -34,6 +38,7 @@ permissions:
     description: All the user permissions
     default: true
     children:
+      justplots.add: true
       justplots.auto: true
       justplots.claim: true
       justplots.clear: true
@@ -41,6 +46,7 @@ permissions:
   justplots.admin:
     description: All the admin permissions
     children:
+      justplots.add.other: true
       justplots.claim.other: true
       justplots.clear.other: true
       justplots.dispose: true

@@ -2,18 +2,18 @@ package just.plots.commands;
 
 import just.plots.JustPlots;
 import just.plots.Plot;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
-public class InfoCommand extends SubCommand {
+public class AddCommand extends SubCommand {
 
-    public InfoCommand() {
-        super("/p info", "Get info about the plot", "info", "i");
+    public AddCommand() {
+        super("/p add <player>", "Add a player to your plot", "add", "trust", "a");
     }
 
     @Override
@@ -30,39 +30,41 @@ public class InfoCommand extends SubCommand {
             return false;
         }
 
-        sender.sendMessage(ChatColor.AQUA + "Plot " + plot.toString() + " belongs to " + JustPlots.getUsername(plot.getOwner()));
-
-        sender.sendMessage(ChatColor.DARK_AQUA + "Created on: " + ChatColor.WHITE + plot.getCreationDate());
-
-        StringBuilder added = new StringBuilder(ChatColor.DARK_AQUA + "Added players: ");
-
-        Set<UUID> addedUuids = plot.getAdded();
-
-        if (addedUuids.isEmpty()) {
-            added.append(ChatColor.GRAY);
-            added.append("No one");
+        if (!plot.isOwner((Player) sender) && !sender.hasPermission("justplots.add.other")) {
+            sender.sendMessage(ChatColor.RED + JustPlots.getUsername(plot.getOwner()) + " owns that plot");
+            return false;
         }
 
-        boolean first = true;
-        for (UUID uuid : addedUuids) {
-            added.append(ChatColor.WHITE);
-            if (!first) {
-                added.append(", ");
-            }
-
-            added.append(JustPlots.getUsername(uuid));
-
-            first = false;
+        if (args.length < 1) {
+            sender.sendMessage(ChatColor.RED + "Usage: " + getUsage());
+            return false;
         }
 
-        sender.sendMessage(added.toString());
+        OfflinePlayer toAdd = Bukkit.getOfflinePlayer(args[0]);
+
+        if (plot.isAdded(toAdd)) {
+            sender.sendMessage(ChatColor.RED + toAdd.getName() + " is already added to that plot");
+            return false;
+        }
+
+        plot.addPlayer(toAdd.getUniqueId());
+
+        String whos = plot.isOwner((Player) sender) ? "your" : JustPlots.getUsername(plot.getOwner()) + "'s";
+
+        sender.sendMessage(ChatColor.GREEN + "Succesfully added " + toAdd.getName() + " to " + whos + " plot");
 
         return true;
     }
 
     @Override
     public void onTabComplete(CommandSender sender, String[] args, List<String> tabCompletion) {
-        // Do nothing, /p info takes no arguments
+        if (args.length == 1) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
+                    tabCompletion.add(player.getName());
+                }
+            }
+        }
     }
 
 }

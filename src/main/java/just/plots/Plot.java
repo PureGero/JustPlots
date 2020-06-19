@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -118,12 +118,20 @@ public class Plot implements Comparable<Plot> {
         }
     }
 
-    public boolean isAdded(Player player) {
+    public boolean isOwner(OfflinePlayer player) {
+        return isOwner(player.getUniqueId());
+    }
+
+    public boolean isOwner(UUID uuid) {
+        return owner.equals(uuid);
+    }
+
+    public boolean isAdded(OfflinePlayer player) {
         return isAdded(player.getUniqueId());
     }
 
     public boolean isAdded(UUID uuid) {
-        return owner.equals(uuid) || added.contains(uuid);
+        return isOwner(uuid) || added.contains(uuid);
     }
 
     public void addPlayer(UUID uuid) {

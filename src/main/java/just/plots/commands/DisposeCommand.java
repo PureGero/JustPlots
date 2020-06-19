@@ -28,8 +28,6 @@ public class DisposeCommand extends SubCommand {
             return false;
         }
 
-        UUID senderUuid = ((Player) sender).getUniqueId();
-
         Plot plot = JustPlots.getPlotAt((Entity) sender);
 
         if (plot == null) {
@@ -37,14 +35,14 @@ public class DisposeCommand extends SubCommand {
             return false;
         }
 
-        if (!senderUuid.equals(plot.getOwner()) && !sender.hasPermission("justplots.dispose,other")) {
+        if (!plot.isOwner((Player) sender) && !sender.hasPermission("justplots.dispose,other")) {
             sender.sendMessage(ChatColor.RED + JustPlots.getUsername(plot.getOwner()) + " owns that plot");
             return false;
         }
 
         plot.delete();
 
-        String name = senderUuid.equals(plot.getOwner()) ? "your" : JustPlots.getUsername(plot.getOwner()) + "'s";
+        String name = plot.isOwner((Player) sender) ? "your" : JustPlots.getUsername(plot.getOwner()) + "'s";
         sender.sendMessage(ChatColor.GREEN + "Succesfully disposed " + name
                 + " plot at " + plot);
 

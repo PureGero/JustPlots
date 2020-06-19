@@ -31,8 +31,6 @@ public class ResetCommand extends SubCommand {
             return false;
         }
 
-        UUID senderUuid = ((Player) sender).getUniqueId();
-
         Plot plot = JustPlots.getPlotAt((Entity) sender);
 
         if (plot == null) {
@@ -40,7 +38,7 @@ public class ResetCommand extends SubCommand {
             return false;
         }
 
-        if (!senderUuid.equals(plot.getOwner()) && !sender.hasPermission("justplots.reset.other")) {
+        if (!plot.isOwner((Player) sender) && !sender.hasPermission("justplots.reset.other")) {
             sender.sendMessage(ChatColor.RED + JustPlots.getUsername(plot.getOwner()) + " owns that plot");
             return false;
         }
@@ -59,7 +57,7 @@ public class ResetCommand extends SubCommand {
         plot.unclaimWalls();
         plot.clearSign();
 
-        String name = senderUuid.equals(plot.getOwner()) ? "your" : JustPlots.getUsername(plot.getOwner()) + "'s";
+        String name = plot.isOwner((Player) sender) ? "your" : JustPlots.getUsername(plot.getOwner()) + "'s";
         sender.sendMessage(ChatColor.GREEN + "Succesfully reset " + name
                 + " plot at " + plot);
 

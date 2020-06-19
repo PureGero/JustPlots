@@ -30,6 +30,7 @@ public class JustPlotsCommand implements CommandExecutor, TabCompleter {
         addCommand(new ClaimCommand());
         addCommand(new AutoCommand());
         addCommand(new VisitCommand());
+        addCommand(new AddCommand());
         addCommand(new ClearCommand());
         addCommand(new ResetCommand());
         addCommand(new DisposeCommand());

@@ -3,7 +3,6 @@ package just.plots.commands;
 import just.plots.JustPlots;
 import just.plots.Plot;
 import just.plots.events.PlotClearEvent;
-import just.plots.events.PlotPlayerAddEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -11,7 +10,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.UUID;
 
 public class ClearCommand extends SubCommand {
 
@@ -31,8 +29,6 @@ public class ClearCommand extends SubCommand {
             return false;
         }
 
-        UUID senderUuid = ((Player) sender).getUniqueId();
-
         Plot plot = JustPlots.getPlotAt((Entity) sender);
 
         if (plot == null) {
@@ -40,7 +36,7 @@ public class ClearCommand extends SubCommand {
             return false;
         }
 
-        if (!senderUuid.equals(plot.getOwner()) && !sender.hasPermission("justplots.clear.other")) {
+        if (!plot.isOwner((Player) sender) && !sender.hasPermission("justplots.clear.other")) {
             sender.sendMessage(ChatColor.RED + JustPlots.getUsername(plot.getOwner()) + " owns that plot");
             return false;
         }
@@ -55,7 +51,7 @@ public class ClearCommand extends SubCommand {
 
         plot.reset();
 
-        String name = senderUuid.equals(plot.getOwner()) ? "your" : JustPlots.getUsername(plot.getOwner()) + "'s";
+        String name = plot.isOwner((Player) sender) ? "your" : JustPlots.getUsername(plot.getOwner()) + "'s";
         sender.sendMessage(ChatColor.GREEN + "Succesfully cleared " + name
                 + " plot at " + plot);
 
