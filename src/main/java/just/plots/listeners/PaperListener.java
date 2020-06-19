@@ -29,6 +29,13 @@ public class PaperListener implements Listener {
         }
     }
 
+    private double squareDistance(Location loc1, Location loc2) {
+        return Math.max(
+                Math.abs(loc1.getX() - loc2.getX()),
+                Math.abs(loc1.getZ() - loc2.getZ())
+        );
+    }
+
     @EventHandler
     public void onEntityPathfind(EntityPathfindEvent event) {
         if (!JustPlots.isPlotWorld(event.getEntity().getWorld())) {
@@ -43,8 +50,8 @@ public class PaperListener implements Listener {
             if (from != null && from != JustPlots.getPlotAt(event.getEntity())) {
                 // Don't cancel if they're getting closer to their origin plot
                 Location middle = from.getMiddle();
-                double entityDistance = event.getEntity().getLocation().distanceSquared(middle);
-                double locDistance = event.getLoc().distanceSquared(middle);
+                double entityDistance = squareDistance(event.getEntity().getLocation(), middle);
+                double locDistance = squareDistance(event.getLoc(), middle);
 
                 if (locDistance <= entityDistance) {
                     return;
@@ -75,8 +82,8 @@ public class PaperListener implements Listener {
             if (from != null && from != JustPlots.getPlotAt(event.getEntity())) {
                 // Don't cancel if they're getting closer to their origin plot
                 Location middle = from.getMiddle();
-                double entityDistance = event.getEntity().getLocation().distanceSquared(middle);
-                double locDistance = target.getLocation().distanceSquared(middle);
+                double entityDistance = squareDistance(event.getEntity().getLocation(), middle);
+                double locDistance = squareDistance(target.getLocation(), middle);
 
                 if (locDistance <= entityDistance) {
                     return;
