@@ -1,6 +1,7 @@
 package just.plots;
 
 import io.papermc.lib.PaperLib;
+import just.plots.util.AsyncUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,7 +18,7 @@ public class ResetManager {
     public static void reset(PlotWorld plotWorld, int fromx, int fromz, int tox, int toz) {
         // TODO Use WorldEdit if installed
 
-        double i = 1;
+        double i = 2;
 
         for (int cx = fromx >> 4; cx <= tox >> 4; cx++) {
             for (int cz = fromz >> 4; cz <= toz >> 4; cz++) {
@@ -53,39 +54,41 @@ public class ResetManager {
         public void run() {
             World world = Bukkit.getWorld(plotWorld.getWorld());
 
-            PaperLib.getChunkAtAsync(world, minx >> 4, minz >> 4).thenAccept(chunk -> {
+            PaperLib.getChunkAtAsync(world, minx >> 4, minz >> 4, false).thenAccept(chunk -> {
                 if (chunk == null) {
                     return; // Not generated
                 }
 
-                for (int x = minx; x <= maxx; x++) {
-                    for (int z = minz; z <= maxz; z++) {
-                        for (int y = 0; y < 256; y++) {
-                            Block block = chunk.getBlock(x & 0xF, y, z & 0xF);
+                AsyncUtil.ensureMainThread(() -> {
+                    for (int x = minx; x <= maxx; x++) {
+                        for (int z = minz; z <= maxz; z++) {
+                            for (int y = 0; y < 256; y++) {
+                                Block block = chunk.getBlock(x & 0xF, y, z & 0xF);
 
-                            Material material = Material.AIR;
-                            if (y == 0) {
-                                material = Material.BEDROCK;
-                            } else if (y < plotWorld.getFloorHeight()) {
-                                material = Material.DIRT;
-                            } else if (y == plotWorld.getFloorHeight()) {
-                                material = Material.GRASS_BLOCK;
+                                Material material = Material.AIR;
+                                if (y == 0) {
+                                    material = Material.BEDROCK;
+                                } else if (y < plotWorld.getFloorHeight()) {
+                                    material = Material.DIRT;
+                                } else if (y == plotWorld.getFloorHeight()) {
+                                    material = Material.GRASS_BLOCK;
+                                }
+
+                                if (!block.getType().equals(material)) {
+                                    block.setType(material, false);
+                                }
+
+                                world.setBiome(x, y, z, Biome.PLAINS);
                             }
-
-                            if (!block.getType().equals(material)) {
-                                block.setType(material, false);
-                            }
-
-                            world.setBiome(x, y, z, Biome.PLAINS);
                         }
                     }
-                }
 
-                for (Entity entity : chunk.getEntities()) {
-                    if (!(entity instanceof Player)) {
-                        entity.remove();
+                    for (Entity entity : chunk.getEntities()) {
+                        if (!(entity instanceof Player)) {
+                            entity.remove();
+                        }
                     }
-                }
+                });
             });
         }
     }

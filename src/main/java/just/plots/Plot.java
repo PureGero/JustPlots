@@ -2,6 +2,7 @@ package just.plots;
 
 import io.papermc.lib.PaperLib;
 import just.plots.events.PlotDeletedEvent;
+import just.plots.util.AsyncUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -251,10 +252,10 @@ public class Plot implements Comparable<Plot> {
 
         Location signLoc = getSign();
 
-        PaperLib.getChunkAtAsync(getSign()).thenAccept(chunk -> {
+        PaperLib.getChunkAtAsync(getSign()).thenAccept(chunk -> AsyncUtil.ensureMainThread(() -> {
             Block signBlock = chunk.getBlock(signLoc.getBlockX() & 0xF, signLoc.getBlockY(), signLoc.getBlockZ() & 0xF);
             future.complete(signBlock);
-        });
+        }));
 
         return future;
     }
@@ -309,7 +310,7 @@ public class Plot implements Comparable<Plot> {
         chunkBatcher.run();
     }
 
-    public void reset() {
+    public void clear() {
         Location from = getBottom();
         Location to = getTop();
 

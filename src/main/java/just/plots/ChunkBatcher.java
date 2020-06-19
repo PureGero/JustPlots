@@ -1,6 +1,7 @@
 package just.plots;
 
 import io.papermc.lib.PaperLib;
+import just.plots.util.AsyncUtil;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 
@@ -67,11 +68,15 @@ public class ChunkBatcher implements Runnable {
 
         @Override
         public void run() {
-            PaperLib.getChunkAtAsync(world, cx, cz).thenAccept(chunk -> {
-                for (BlockToModify block : blocksToModify) {
-                    chunk.getBlock(block.x, block.y, block.z).setBlockData(block.blockData, false);
+            PaperLib.getChunkAtAsync(world, cx, cz).thenAccept(chunk -> AsyncUtil.ensureMainThread(() -> {
+                try {
+                    for (BlockToModify block : blocksToModify) {
+                        chunk.getBlock(block.x, block.y, block.z).setBlockData(block.blockData, false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
+            }));
         }
     }
 }

@@ -49,7 +49,7 @@ public class ClearCommand extends SubCommand {
             throw new RuntimeException("Event was cancelled");
         }
 
-        plot.reset();
+        plot.clear();
 
         String name = plot.isOwner((Player) sender) ? "your" : JustPlots.getUsername(plot.getOwner()) + "'s";
         sender.sendMessage(ChatColor.GREEN + "Succesfully cleared " + name

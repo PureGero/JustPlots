@@ -5,13 +5,11 @@ import just.plots.Plot;
 import just.plots.events.PlotClearEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.UUID;
 
 public class ResetCommand extends SubCommand {
 
@@ -52,7 +50,7 @@ public class ResetCommand extends SubCommand {
         }
 
         plot.delete();
-        plot.reset();
+        plot.clear();
 
         plot.unclaimWalls();
         plot.clearSign();
