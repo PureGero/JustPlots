@@ -14,10 +14,7 @@ import org.bukkit.entity.Player;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Plot implements Comparable<Plot> {
@@ -369,5 +366,21 @@ public class Plot implements Comparable<Plot> {
                 bottom.getBlockX() + (top.getBlockX() - bottom.getBlockX()) / 2.0 + 0.5,
                 plotWorld.getFloorHeight() + 1,
                 bottom.getBlockZ() + (top.getBlockZ() - bottom.getBlockZ()) / 2.0 + 0.5);
+    }
+
+    public List<Player> getPlayersInPlot() {
+        List<Player> players = new ArrayList<>();
+
+        World world = Bukkit.getWorld(this.world);
+
+        if (world != null) {
+            for (Player player : world.getPlayers()) {
+                if (inPlot(player)) {
+                    players.add(player);
+                }
+            }
+        }
+
+        return players;
     }
 }
