@@ -40,4 +40,8 @@ public abstract class SubCommand {
     public String getUsage() {
         return usage;
     }
+
+    public String getPermission() {
+        return null;
+    }
 }

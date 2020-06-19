@@ -8,6 +8,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.world.World;
 import just.plots.JustPlots;
 import just.plots.Plot;
+import just.plots.commands.WeanywhereCommand;
 import just.plots.events.PlotDeletedEvent;
 import just.plots.events.PlotEnterEvent;
 import just.plots.events.PlotPlayerAddEvent;
@@ -37,6 +38,8 @@ public class WorldEditListener implements Listener {
         }
 
         if (worldEditPlugin != null) {
+            WeanywhereCommand.setWorldEditListener(this);
+
             plots.getServer().getPluginManager().registerEvents(this, plots);
 
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -45,11 +48,13 @@ public class WorldEditListener implements Listener {
         }
     }
 
-    private void setup(Player player) {
+    public void setup(Player player) {
         if (JustPlots.getPlotWorld(player.getWorld()).isPlotWorld()) {
             Plot plot = JustPlots.getPlotAt(player);
 
-            if (plot != null && plot.isAdded(player)) {
+            if (WeanywhereCommand.isWeanywhere(player)) {
+                removeMask(player);
+            } else if (plot != null && plot.isAdded(player)) {
                 setMask(player, plot);
             } else {
                 setMask(player, null);
@@ -69,14 +74,14 @@ public class WorldEditListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlotEnter(PlotEnterEvent e) {
-        if (e.getPlot().isAdded(e.getPlayer())) {
+        if (!WeanywhereCommand.isWeanywhere(e.getPlayer()) && e.getPlot().isAdded(e.getPlayer())) {
             setMask(e.getPlayer(), e.getPlot());
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlotPlayerAdded(PlotPlayerAddEvent e) {
-        if (e.getPlayer() != null && JustPlots.getPlotAt(e.getPlayer()) == e.getPlot()) {
+        if (e.getPlayer() != null && !WeanywhereCommand.isWeanywhere(e.getPlayer()) && JustPlots.getPlotAt(e.getPlayer()) == e.getPlot()) {
             setMask(e.getPlayer(), e.getPlot());
         }
     }

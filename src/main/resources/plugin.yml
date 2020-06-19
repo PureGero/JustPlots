@@ -34,6 +34,8 @@ permissions:
     description: Reset a plot
   justplots.reset.other:
     description: Reset another player's plot
+  justplots.weanywhere:
+    description: Use WorldEdit anywhere
   justplots.user:
     description: All the user permissions
     default: true
@@ -54,3 +56,4 @@ permissions:
       justplots.edit.other: true
       justplots.reset.other: true
       justplots.user: true
+      justplots.weanywhere: true
