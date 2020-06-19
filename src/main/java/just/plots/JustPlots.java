@@ -101,6 +101,13 @@ public class JustPlots extends JavaPlugin {
         return plotWorld;
     }
 
+    /**
+     * Returns true if the world is a valid plot world
+     */
+    public static boolean isPlotWorld(World world) {
+        return getPlotWorld(world).isPlotWorld();
+    }
+
     public static Plot getPlot(String world, int x, int z) {
         return getPlot(world, new PlotId(x, z));
     }
