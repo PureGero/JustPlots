@@ -5,14 +5,22 @@ import just.plots.Plot;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import java.util.Iterator;
@@ -24,11 +32,19 @@ public class PlotListener implements Listener {
     }
 
     private void playerModify(Player player, Block block, Cancellable cancellable) {
-        if (!JustPlots.getPlotWorld(block.getWorld()).isPlotWorld()) {
+        playerModify(player, block.getLocation(), cancellable);
+    }
+
+    private void playerModify(Player player, Entity entity, Cancellable cancellable) {
+        playerModify(player, entity.getLocation(), cancellable);
+    }
+
+    private void playerModify(Player player, Location location, Cancellable cancellable) {
+        if (!JustPlots.getPlotWorld(location.getWorld()).isPlotWorld()) {
             return; // Not a plot world
         }
 
-        Plot plot = JustPlots.getPlotAt(block.getLocation());
+        Plot plot = JustPlots.getPlotAt(location);
 
         if ((plot == null || !plot.isAdded(player)) && !player.hasPermission("justplots.edit.other")) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
@@ -185,6 +201,37 @@ public class PlotListener implements Listener {
             if (fromPlot != toPlot) {
                 iterator.remove();
             }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamage(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player) {
+            playerModify((Player) event.getDamager(), event.getEntity(), event);
+        }
+    }
+
+    @EventHandler
+    public void onVehicleDamage(VehicleDamageEvent event) {
+        if (event.getAttacker() instanceof Player) {
+            playerModify((Player) event.getAttacker(), event.getVehicle(), event);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        playerModify(event.getPlayer(), event.getRightClicked(), event);
+    }
+
+    @EventHandler
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
+        playerModify(event.getPlayer(), event.getRightClicked(), event);
+    }
+
+    @EventHandler
+    public void onHangingBreak(HangingBreakByEntityEvent event) {
+        if (event.getRemover() instanceof Player) {
+            playerModify((Player) event.getRemover(), event.getEntity(), event);
         }
     }
 

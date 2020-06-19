@@ -53,7 +53,7 @@ public class ResetManager {
         public void run() {
             World world = Bukkit.getWorld(plotWorld.getWorld());
 
-            PaperLib.getChunkAtAsync(world, minx >> 4, minz >> 4, false).thenAccept(chunk -> {
+            PaperLib.getChunkAtAsync(world, minx >> 4, minz >> 4).thenAccept(chunk -> {
                 if (chunk == null) {
                     return; // Not generated
                 }

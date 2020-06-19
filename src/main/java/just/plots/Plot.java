@@ -73,6 +73,15 @@ public class Plot implements Comparable<Plot> {
             statement.setInt(3, z);
             statement.executeUpdate();
 
+            try (PreparedStatement statement2 = JustPlots.getDatabase().prepareStatement(
+                    "DELETE FROM justplots_added WHERE world = ? AND x = ? AND z = ?"
+            )) {
+                statement2.setString(1, world);
+                statement2.setInt(2, x);
+                statement2.setInt(3, z);
+                statement2.executeUpdate();
+            }
+
             Set<Plot> playerPlots = JustPlots.getPlotsIfCached(owner);
             if (playerPlots != null) {
                 playerPlots.remove(this);
