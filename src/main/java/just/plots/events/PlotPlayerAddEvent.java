@@ -1,21 +1,22 @@
 package just.plots.events;
 
 import just.plots.Plot;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
+import java.util.UUID;
+
 /**
- * Called before a player enters a plot
+ * Called before a player is added to a plot
  */
-public class PlotEnterEvent extends PlotEvent implements Cancellable {
+public class PlotPlayerAddEvent extends PlotEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
     private boolean cancelled = false;
 
-    public PlotEnterEvent(Plot plot, Player player) {
-        super(plot, player);
+    public PlotPlayerAddEvent(Plot plot, UUID player) {
+        super(plot, player, true);
     }
 
     @Override

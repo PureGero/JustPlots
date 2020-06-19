@@ -1,10 +1,16 @@
 package just.plots;
 
 import io.papermc.lib.PaperLib;
-import org.bukkit.*;
+import just.plots.events.PlotDeletedEvent;
+import just.plots.events.PlotPlayerAddEvent;
+import just.plots.events.PlotPlayerRemoveEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -14,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 public class Plot implements Comparable<Plot> {
     private final PlotId plotId;
@@ -74,6 +79,8 @@ public class Plot implements Comparable<Plot> {
             }
 
             plotWorld.removePlot(this);
+
+            Bukkit.getScheduler().runTask(JustPlots.getPlugin(), () -> Bukkit.getServer().getPluginManager().callEvent(new PlotDeletedEvent(this, owner)));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -102,11 +109,23 @@ public class Plot implements Comparable<Plot> {
         }
     }
 
+    public boolean isAdded(Player player) {
+        return isAdded(player.getUniqueId());
+    }
+
     public boolean isAdded(UUID uuid) {
         return owner.equals(uuid) || added.contains(uuid);
     }
 
     public void addPlayer(UUID uuid) {
+        PlotPlayerAddEvent event = new PlotPlayerAddEvent(this, uuid);
+
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            throw new RuntimeException("Event was cancelled");
+        }
+
         try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement(
                 "INSERT OR IGNORE INTO justplots_added (world, x, z, uuid) VALUES (?, ?, ?, ?)"
         )) {
@@ -123,6 +142,14 @@ public class Plot implements Comparable<Plot> {
     }
 
     public void removePlayer(UUID uuid) {
+        PlotPlayerRemoveEvent event = new PlotPlayerRemoveEvent(this, uuid);
+
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            throw new RuntimeException("Event was cancelled");
+        }
+
         try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement(
                 "DELETE FROM justplots_added WHERE world = ? AND x = ? AND z = ? AND uuid = ?"
         )) {
@@ -277,11 +304,23 @@ public class Plot implements Comparable<Plot> {
     }
 
     public void reset() {
-        int fromx = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + 1;
-        int fromz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + 1;
-        int tox = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize();
-        int toz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize();
+        Location from = getBottom();
+        Location to = getTop();
 
-        ResetManager.reset(plotWorld, fromx, fromz, tox, toz);
+        ResetManager.reset(plotWorld, from.getBlockX(), from.getBlockZ(), to.getBlockX(), to.getBlockZ());
+    }
+
+    public Location getBottom() {
+        return new Location(Bukkit.getWorld(this.world),
+                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + 1,
+                0,
+                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + 1);
+    }
+
+    public Location getTop() {
+        return new Location(Bukkit.getWorld(this.world),
+                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize(),
+                255,
+                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize());
     }
 }

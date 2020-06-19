@@ -17,9 +17,9 @@ import org.bukkit.event.world.StructureGrowEvent;
 
 import java.util.Iterator;
 
-public class PlotProtectionListener implements Listener {
+public class PlotListener implements Listener {
 
-    public PlotProtectionListener(JustPlots plots) {
+    public PlotListener(JustPlots plots) {
         plots.getServer().getPluginManager().registerEvents(this, plots);
     }
 
@@ -30,7 +30,7 @@ public class PlotProtectionListener implements Listener {
 
         Plot plot = JustPlots.getPlotAt(block.getLocation());
 
-        if ((plot == null || !plot.isAdded(player.getUniqueId())) && !player.hasPermission("justplots.edit.other")) {
+        if ((plot == null || !plot.isAdded(player)) && !player.hasPermission("justplots.edit.other")) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                     new ComponentBuilder("You cannot build here").color(ChatColor.RED).create());
 

@@ -2,6 +2,9 @@ package just.plots.commands;
 
 import just.plots.JustPlots;
 import just.plots.Plot;
+import just.plots.events.PlotClearEvent;
+import just.plots.events.PlotPlayerAddEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -40,6 +43,14 @@ public class ClearCommand extends SubCommand {
         if (!senderUuid.equals(plot.getOwner()) && !sender.hasPermission("justplots.clear.other")) {
             sender.sendMessage(ChatColor.RED + JustPlots.getUsername(plot.getOwner()) + " owns that plot");
             return false;
+        }
+
+        PlotClearEvent event = new PlotClearEvent(plot, (Player) sender);
+
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            throw new RuntimeException("Event was cancelled");
         }
 
         plot.reset();

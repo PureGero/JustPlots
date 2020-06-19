@@ -5,6 +5,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called before a player exits a plot
+ */
 public class PlotExitEvent extends PlotEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -27,7 +30,7 @@ public class PlotExitEvent extends PlotEvent implements Cancellable {
 
     @Override
     public HandlerList getHandlers() {
-        return null;
+        return handlers;
     }
 
     public static HandlerList getHandlerList() {

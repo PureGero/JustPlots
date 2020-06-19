@@ -19,7 +19,9 @@ public class PlotLoader implements Runnable {
 
         loadPlots();
 
-        plots.getServer().getScheduler().runTaskAsynchronously(plots, this);
+        // Load the plots async - Not really necessary
+        //plots.getServer().getScheduler().runTaskAsynchronously(plots, this);
+        run();
     }
 
     private void loadPlots() {

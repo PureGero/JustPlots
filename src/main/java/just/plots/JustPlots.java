@@ -10,7 +10,8 @@ import just.plots.database.PlotLoader;
 import just.plots.database.SQLiteDatabase;
 import just.plots.listeners.PaperListener;
 import just.plots.listeners.PlayerListener;
-import just.plots.listeners.PlotProtectionListener;
+import just.plots.listeners.PlotListener;
+import just.plots.listeners.WorldEditListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -51,11 +52,23 @@ public class JustPlots extends JavaPlugin {
 
         new PlotWorldGenerator();
 
-        new PlotProtectionListener(this);
         new PlayerListener(this);
+        new PlotListener(this);
+
+        if (hasWorldEdit()) {
+            new WorldEditListener(this);
+        }
 
         if (PaperLib.isPaper()) {
             new PaperListener(this);
+        }
+    }
+
+    private boolean hasWorldEdit() {
+        try {
+            return Class.forName("com.sk89q.worldedit.bukkit.WorldEditPlugin") != null;
+        } catch (ClassNotFoundException ignored) {
+            return false;
         }
     }
 

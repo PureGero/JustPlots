@@ -5,27 +5,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
+import java.util.UUID;
+
 /**
- * Called before a player enters a plot
+ * Called after a plot has been deleted
  */
-public class PlotEnterEvent extends PlotEvent implements Cancellable {
+public class PlotDeletedEvent extends PlotEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    private boolean cancelled = false;
-
-    public PlotEnterEvent(Plot plot, Player player) {
+    public PlotDeletedEvent(Plot plot, UUID player) {
         super(plot, player);
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean cancel) {
-        cancelled = cancel;
     }
 
     @Override

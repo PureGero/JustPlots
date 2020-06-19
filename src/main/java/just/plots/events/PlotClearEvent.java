@@ -8,14 +8,30 @@ import org.bukkit.event.HandlerList;
 /**
  * Called before a player enters a plot
  */
-public class PlotEnterEvent extends PlotEvent implements Cancellable {
+public class PlotClearEvent extends PlotEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
     private boolean cancelled = false;
 
-    public PlotEnterEvent(Plot plot, Player player) {
-        super(plot, player);
+    private boolean willBeDeleted = false;
+
+    public PlotClearEvent(Plot plot, Player player) {
+        super(plot, player, true);
+    }
+
+    public PlotClearEvent(Plot plot, Player player, boolean willBeDeleted) {
+        super(plot, player, true);
+
+        this.willBeDeleted = willBeDeleted;
+    }
+
+    /**
+     * Returns true if the plot will be deleted after it is cleared. False if
+     * the plot will remain with the same owner.
+     */
+    public boolean willBeDeleted() {
+        return willBeDeleted;
     }
 
     @Override
