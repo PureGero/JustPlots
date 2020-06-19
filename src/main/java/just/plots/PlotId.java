@@ -4,6 +4,13 @@ public class PlotId {
     private final int x;
     private final int z;
 
+    public PlotId(String id) throws IndexOutOfBoundsException, NumberFormatException {
+        String[] parts = id.split(";");
+
+        this.x = Integer.parseInt(parts[0]);
+        this.z = Integer.parseInt(parts[1]);
+    }
+
     public PlotId(int x, int z) {
         this.x = x;
         this.z = z;
