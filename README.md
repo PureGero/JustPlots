@@ -27,3 +27,19 @@ Or on widows:
     > gradlew build
 
 The plugin jar will be found in `build/libs`. Enjoy!
+
+JustPlots as a dependency
+=========================
+Add the following into your build.gradle:
+
+```
+repositories {
+  maven {
+    url "https://raw.githubusercontent.com/PureGero/JustPlots/repository/"
+  }
+}
+
+dependencies {
+  compileOnly "just.plots:justplots:0.9.1"
+}
+```
