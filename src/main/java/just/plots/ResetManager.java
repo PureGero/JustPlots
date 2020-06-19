@@ -18,7 +18,7 @@ public class ResetManager {
     public static void reset(PlotWorld plotWorld, int fromx, int fromz, int tox, int toz) {
         // TODO Use WorldEdit if installed
 
-        double i = 2;
+        double i = 1;
 
         for (int cx = fromx >> 4; cx <= tox >> 4; cx++) {
             for (int cz = fromz >> 4; cz <= toz >> 4; cz++) {

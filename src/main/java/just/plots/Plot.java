@@ -330,4 +330,14 @@ public class Plot implements Comparable<Plot> {
                 255,
                 Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() - 1));
     }
+
+    public Location getMiddle() {
+        Location bottom = getBottom();
+        Location top = getTop();
+
+        return new Location(Bukkit.getWorld(world),
+                bottom.getBlockX() + (top.getBlockX() - bottom.getBlockX()) / 2.0 + 0.5,
+                plotWorld.getFloorHeight() + 1,
+                bottom.getBlockZ() + (top.getBlockZ() - bottom.getBlockZ()) / 2.0 + 0.5);
+    }
 }
