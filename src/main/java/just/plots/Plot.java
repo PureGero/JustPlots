@@ -212,7 +212,7 @@ public class Plot implements Comparable<Plot> {
         return owner;
     }
 
-    public Set<UUID> getAdded() {
+    public HashSet<UUID> getAdded() {
         return added;
     }
 
