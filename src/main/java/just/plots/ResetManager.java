@@ -7,8 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 /**
  * A chunk based resetter. Spilts the work into chunks and resets a few chunks
@@ -80,12 +78,6 @@ public class ResetManager {
 
                                 world.setBiome(x, y, z, Biome.PLAINS);
                             }
-                        }
-                    }
-
-                    for (Entity entity : chunk.getEntities()) {
-                        if (!(entity instanceof Player)) {
-                            entity.remove();
                         }
                     }
                 });

@@ -127,7 +127,13 @@ public class JustPlots extends JavaPlugin {
             return null;
         }
 
-        return getPlotWorld(location.getWorld()).getPlot(id.getX(), id.getZ());
+        Plot plot = getPlotWorld(location.getWorld()).getPlot(id.getX(), id.getZ());
+
+        if (!plot.inPlot(location)) {
+            return null;
+        }
+
+        return plot;
     }
 
     public static PlotId getPlotIdAt(Entity entity) {
@@ -147,15 +153,6 @@ public class JustPlots extends JavaPlugin {
 
         int x = (int) Math.floor((double) location.getBlockX() / (world.getPlotSize() + world.getRoadSize()));
         int z = (int) Math.floor((double) location.getBlockZ() / (world.getPlotSize() + world.getRoadSize()));
-
-        int dx = Math.floorMod(location.getBlockX(), (world.getPlotSize() + world.getRoadSize()));
-        int dz = Math.floorMod(location.getBlockZ(), (world.getPlotSize() + world.getRoadSize()));
-
-        if (dx <= world.getRoadSize() / 2 || dx > world.getPlotSize() + world.getRoadSize() / 2 ||
-                dz <= world.getRoadSize() / 2 || dz > world.getPlotSize() + world.getRoadSize() / 2) {
-            // On the road
-            return null;
-        }
 
         return new PlotId(x, z);
     }

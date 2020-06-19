@@ -3,13 +3,13 @@ package just.plots;
 import io.papermc.lib.PaperLib;
 import just.plots.events.PlotDeletedEvent;
 import just.plots.util.AsyncUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import just.plots.util.PaperUtil;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -315,6 +315,36 @@ public class Plot implements Comparable<Plot> {
         Location to = getTop();
 
         ResetManager.reset(plotWorld, from.getBlockX(), from.getBlockZ(), to.getBlockX(), to.getBlockZ());
+
+        clearEntities();
+    }
+
+    private void clearEntities() {
+        World world = Bukkit.getWorld(this.world);
+
+        if (world == null) {
+            return;
+        }
+
+        AsyncUtil.ensureMainThread(() -> {
+            for (Entity entity : world.getEntities()) {
+                if (!(entity instanceof Player) && (inPlot(entity) || (PaperLib.isPaper() && inPlot(PaperUtil.getOrigin(entity))))) {
+                    entity.remove();
+                }
+            }
+        });
+    }
+
+    public boolean inPlot(Entity entity) {
+        return inPlot(entity.getLocation());
+    }
+
+    public boolean inPlot(Location location) {
+        Location top = getTop();
+        Location bottom = getBottom();
+
+        return bottom.getX() <= location.getBlockX() && location.getBlockX() <= top.getX() &&
+                bottom.getZ() <= location.getBlockZ() && location.getBlockZ() <= top.getZ();
     }
 
     public Location getBottom() {
