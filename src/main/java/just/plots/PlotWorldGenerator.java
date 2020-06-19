@@ -21,6 +21,8 @@ public class PlotWorldGenerator extends ChunkGenerator {
                 world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
                 world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
                 world.setGameRule(GameRule.MOB_GRIEFING, false);
+
+                world.setSpawnLocation(0, plotWorld.getFloorHeight() + 1, 0);
             }
         }
     }
