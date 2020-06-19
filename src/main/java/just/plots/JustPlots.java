@@ -9,6 +9,7 @@ import just.plots.database.Database;
 import just.plots.database.PlotLoader;
 import just.plots.database.SQLiteDatabase;
 import just.plots.listeners.PaperListener;
+import just.plots.listeners.PlayerListener;
 import just.plots.listeners.PlotProtectionListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,6 +52,7 @@ public class JustPlots extends JavaPlugin {
         new PlotWorldGenerator();
 
         new PlotProtectionListener(this);
+        new PlayerListener(this);
 
         if (PaperLib.isPaper()) {
             new PaperListener(this);
