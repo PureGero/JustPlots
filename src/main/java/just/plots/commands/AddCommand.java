@@ -2,6 +2,7 @@ package just.plots.commands;
 
 import just.plots.JustPlots;
 import just.plots.Plot;
+import just.plots.events.PlotPlayerAddEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -45,6 +46,14 @@ public class AddCommand extends SubCommand {
         if (plot.isAdded(toAdd)) {
             sender.sendMessage(ChatColor.RED + toAdd.getName() + " is already added to that plot");
             return false;
+        }
+
+        PlotPlayerAddEvent event = new PlotPlayerAddEvent(plot, toAdd.getUniqueId());
+
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            throw new RuntimeException("Event was cancelled");
         }
 
         plot.addPlayer(toAdd.getUniqueId());

@@ -2,6 +2,7 @@ package just.plots.commands;
 
 import just.plots.JustPlots;
 import just.plots.Plot;
+import just.plots.events.PlotPlayerRemoveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -50,6 +51,14 @@ public class RemoveCommand extends SubCommand {
         if (plot.isOwner(toRemove)) {
             sender.sendMessage(ChatColor.RED + toRemove.getName() + " is the owner of that plot");
             return false;
+        }
+
+        PlotPlayerRemoveEvent event = new PlotPlayerRemoveEvent(plot, toRemove.getUniqueId());
+
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            throw new RuntimeException("Event was cancelled");
         }
 
         plot.removePlayer(toRemove.getUniqueId());

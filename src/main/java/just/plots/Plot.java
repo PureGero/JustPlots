@@ -135,14 +135,6 @@ public class Plot implements Comparable<Plot> {
     }
 
     public void addPlayer(UUID uuid) {
-        PlotPlayerAddEvent event = new PlotPlayerAddEvent(this, uuid);
-
-        Bukkit.getServer().getPluginManager().callEvent(event);
-
-        if (event.isCancelled()) {
-            throw new RuntimeException("Event was cancelled");
-        }
-
         try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement(
                 "INSERT OR IGNORE INTO justplots_added (world, x, z, uuid) VALUES (?, ?, ?, ?)"
         )) {
@@ -159,14 +151,6 @@ public class Plot implements Comparable<Plot> {
     }
 
     public void removePlayer(UUID uuid) {
-        PlotPlayerRemoveEvent event = new PlotPlayerRemoveEvent(this, uuid);
-
-        Bukkit.getServer().getPluginManager().callEvent(event);
-
-        if (event.isCancelled()) {
-            throw new RuntimeException("Event was cancelled");
-        }
-
         try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement(
                 "DELETE FROM justplots_added WHERE world = ? AND x = ? AND z = ? AND uuid = ?"
         )) {
