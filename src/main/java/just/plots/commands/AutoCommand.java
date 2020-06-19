@@ -32,6 +32,13 @@ public class AutoCommand extends SubCommand {
             return false;
         }
 
+        int maxPlots = JustPlots.getMaxPlots(sender);
+
+        if (maxPlots < Integer.MAX_VALUE && JustPlots.getPlotsInWorld((Player) sender, ((Player) sender).getWorld()).size() >= maxPlots) {
+            sender.sendMessage(ChatColor.RED + "You have reached your plot limit of " + maxPlots);
+            return false;
+        }
+
         String world = ((Player) sender).getWorld().getName();
         PlotId id = JustPlots.getPlotWorld(world).nextAutoClaimPlot();
 

@@ -50,6 +50,13 @@ public class ClaimCommand extends SubCommand {
             return false;
         }
 
+        int maxPlots = JustPlots.getMaxPlots(sender);
+
+        if (maxPlots < Integer.MAX_VALUE && JustPlots.getPlotsInWorld((Player) sender, ((Player) sender).getWorld()).size() >= maxPlots) {
+            sender.sendMessage(ChatColor.RED + "You have reached your plot limit of " + maxPlots);
+            return false;
+        }
+
         plot = JustPlots.claimPlot(world, id, claimAs.getUniqueId());
 
         sender.sendMessage(ChatColor.GREEN + "Succesfully claimed plot " + plot + (claimAs != sender ? " for " + claimAs.getName() : ""));

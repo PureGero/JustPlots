@@ -99,7 +99,6 @@ public class ListCommand extends SubCommand {
                 plotList.add(plot);
             }
         }
-
         if (page < 0 || page > (plotList.size() - 1) / 10) {
             sender.sendMessage(ChatColor.RED + "Page number must be between 1 and " + (plotList.size() + 9) / 10);
             return false;

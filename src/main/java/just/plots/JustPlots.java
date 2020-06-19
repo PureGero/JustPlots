@@ -17,8 +17,12 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permissible;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -129,7 +133,7 @@ public class JustPlots extends JavaPlugin {
 
         Plot plot = getPlotWorld(location.getWorld()).getPlot(id.getX(), id.getZ());
 
-        if (!plot.inPlot(location)) {
+        if (plot == null || !plot.inPlot(location)) {
             return null;
         }
 
@@ -185,6 +189,41 @@ public class JustPlots extends JavaPlugin {
         return plots;
     }
 
+    /**
+     * Return a list of a player's plots in a world. If world is null, it will
+     * return all of the player's plots.
+     */
+    @NotNull
+    public static List<Plot> getPlotsInWorld(@NotNull Player player, @Nullable World world) {
+        return getPlotsInWorld(player, world == null ? null : world.getName());
+    }
+
+    /**
+     * Return a list of a player's plots in a world. If world is null, it will
+     * return all of the player's plots.
+     */
+    @NotNull
+    public static List<Plot> getPlotsInWorld(@NotNull Player player, @Nullable String world) {
+        return getPlotsInWorld(player.getUniqueId(), world);
+    }
+
+    /**
+     * Return a list of a player's plots in a world. If world is null, it will
+     * return all of the player's plots.
+     */
+    @NotNull
+    public static List<Plot> getPlotsInWorld(@NotNull UUID uuid, @Nullable String world) {
+        List<Plot> plotList = new ArrayList<>();
+
+        for (Plot plot : getPlots(uuid)) {
+            if (world == null || plot.getWorldName().equals(world)) {
+                plotList.add(plot);
+            }
+        }
+
+        return plotList;
+    }
+
     public static Collection<PlotWorld> getPlotWorlds() {
         return plotWorlds.values();
     }
@@ -233,6 +272,31 @@ public class JustPlots extends JavaPlugin {
         }
 
         return name;
+    }
+
+    public static int getMaxPlots(Permissible player) {
+        int maxPlots = -1;
+
+        for (PermissionAttachmentInfo permission : player.getEffectivePermissions()) {
+            if (permission.getPermission().startsWith("justplots.plots.") && permission.getValue()) {
+
+                try {
+                    int value = Integer.parseInt(permission.getPermission().substring("justplots.plots.".length()));
+
+                    if (value > maxPlots) {
+                        maxPlots = value;
+                    }
+                } catch (NumberFormatException ignored) {}
+
+            }
+        }
+
+        if (maxPlots == -1) {
+            // Not set, default to essentially infinite
+            maxPlots = Integer.MAX_VALUE;
+        }
+
+        return maxPlots;
     }
 
 }
