@@ -40,6 +40,6 @@ repositories {
 }
 
 dependencies {
-  compileOnly "just.plots:justplots:0.9.1"
+  compileOnly "just.plots:justplots:0.9.2"
 }
 ```
