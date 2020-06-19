@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator;
 
+import java.io.File;
 import java.util.Random;
 
 public class PlotWorldGenerator extends ChunkGenerator {
@@ -13,16 +14,20 @@ public class PlotWorldGenerator extends ChunkGenerator {
     public PlotWorldGenerator() {
         for (PlotWorld plotWorld : JustPlots.getPlotWorlds()) {
             if (plotWorld.isPlotWorld() && Bukkit.getWorld(plotWorld.getWorld()) == null) {
+                boolean firstTimeGenerating = !new File(plotWorld.getWorld()).isDirectory();
+
                 World world = Bukkit.createWorld(new WorldCreator(plotWorld.getWorld()).generator(this));
                 world.setKeepSpawnInMemory(false);
 
-                world.setGameRule(GameRule.DISABLE_RAIDS, true);
-                world.setGameRule(GameRule.DO_FIRE_TICK, false);
-                world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-                world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
-                world.setGameRule(GameRule.MOB_GRIEFING, false);
+                if (firstTimeGenerating) {
+                    world.setGameRule(GameRule.DISABLE_RAIDS, true);
+                    world.setGameRule(GameRule.DO_FIRE_TICK, false);
+                    world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+                    world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+                    world.setGameRule(GameRule.MOB_GRIEFING, false);
 
-                world.setSpawnLocation(0, plotWorld.getFloorHeight() + 1, 0);
+                    world.setSpawnLocation(0, plotWorld.getFloorHeight() + 1, 0);
+                }
             }
         }
     }
