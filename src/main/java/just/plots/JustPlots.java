@@ -24,6 +24,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.print.Paper;
 import java.io.File;
 import java.util.*;
 
@@ -44,6 +45,8 @@ public class JustPlots extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+
+        PaperLib.suggestPaper(this);
 
         database = new SQLiteDatabase(new File(this.getDataFolder(), "plots.db"));
         database.createTables();
