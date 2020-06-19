@@ -27,7 +27,7 @@ public class AutoCommand extends SubCommand {
             return false;
         }
 
-        if (!sender.hasPermission("justplots.auto")) {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to run that command");
             return false;
         }
@@ -65,6 +65,11 @@ public class AutoCommand extends SubCommand {
                 }
             }
         }
+    }
+
+    @Override
+    public String getPermission() {
+        return "justplots.auto";
     }
 
 }

@@ -24,7 +24,7 @@ public class ResetCommand extends SubCommand {
             return false;
         }
 
-        if (!sender.hasPermission("justplots.reset")) {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to run that command");
             return false;
         }
@@ -65,6 +65,11 @@ public class ResetCommand extends SubCommand {
     @Override
     public void onTabComplete(CommandSender sender, String[] args, List<String> tabCompletion) {
         // Do nothing, /p reset takes no arguments
+    }
+
+    @Override
+    public String getPermission() {
+        return "justplots.reset";
     }
 
 }

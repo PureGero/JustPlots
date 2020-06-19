@@ -23,7 +23,7 @@ public class DisposeCommand extends SubCommand {
             return false;
         }
 
-        if (!sender.hasPermission("justplots.dispose")) {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to run that command");
             return false;
         }
@@ -52,6 +52,11 @@ public class DisposeCommand extends SubCommand {
     @Override
     public void onTabComplete(CommandSender sender, String[] args, List<String> tabCompletion) {
         // Do nothing, /p dispose takes no arguments
+    }
+
+    @Override
+    public String getPermission() {
+        return "justplots.dispose";
     }
 
 }

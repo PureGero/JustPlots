@@ -24,7 +24,7 @@ public class ClaimCommand extends SubCommand {
             return false;
         }
 
-        if (!sender.hasPermission("justplots.claim")) {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to run that command");
             return false;
         }
@@ -73,6 +73,11 @@ public class ClaimCommand extends SubCommand {
                 }
             }
         }
+    }
+
+    @Override
+    public String getPermission() {
+        return "justplots.claim";
     }
 
 }

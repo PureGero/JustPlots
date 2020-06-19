@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permissible;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +22,23 @@ public class HelpCommand extends SubCommand {
         commands.add(command);
     }
 
+    private List<SubCommand> getCommandsFor(Permissible permissible) {
+        List<SubCommand> commandList = new ArrayList<>();
+
+        for (SubCommand command : commands) {
+            if (command.getPermission() == null || permissible.hasPermission(command.getPermission())) {
+                commandList.add(command);
+            }
+        }
+
+        return commandList;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, String label, String[] args) {
-        int pages = (int) Math.ceil(commands.size() / 8.0);
+        List<SubCommand> commandList = getCommandsFor(sender);
+
+        int pages = (int) Math.ceil(commandList.size() / 8.0);
         int page = 1;
 
         if (args.length >= 1) {
@@ -49,8 +64,8 @@ public class HelpCommand extends SubCommand {
             sender.sendMessage(ChatColor.GRAY + "This is the last page");
         }
 
-        for (int i = page * 8 - 8; i < page * 8 && i < commands.size(); i++) {
-            SubCommand command = commands.get(i);
+        for (int i = page * 8 - 8; i < page * 8 && i < commandList.size(); i++) {
+            SubCommand command = commandList.get(i);
             String usage = command.getUsage();
 
             sender.spigot().sendMessage(new ComponentBuilder(usage).color(ChatColor.AQUA)
@@ -64,10 +79,12 @@ public class HelpCommand extends SubCommand {
 
     @Override
     public void onTabComplete(CommandSender sender, String[] args, List<String> tabCompletion) {
-        int pages = commands.size() / 8;
+        List<SubCommand> commandList = getCommandsFor(sender);
+
+        int pages = commandList.size() / 8;
 
         if (args.length >= 1) {
-            for (int i = 1; i <= pages; i++) {
+            for (int i = 1; i <= pages + 1; i++) {
                 if (Integer.toString(i).startsWith(args[0])) {
                     tabCompletion.add(Integer.toString(i));
                 }
