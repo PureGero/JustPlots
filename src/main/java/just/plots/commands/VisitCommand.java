@@ -3,10 +3,7 @@ package just.plots.commands;
 import io.papermc.lib.PaperLib;
 import just.plots.JustPlots;
 import just.plots.Plot;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -76,6 +73,14 @@ public class VisitCommand extends SubCommand {
                         return false;
                     }
                 } else {
+                    World world = Bukkit.getWorld(args[0]);
+
+                    if (world != null) {
+                        sender.sendMessage(ChatColor.AQUA + "Teleported to plot world " + world.getName());
+                        PaperLib.teleportAsync((Entity) sender, world.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
+                        return true;
+                    }
+
                     OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
 
                     Set<Plot> playerPlots = JustPlots.getPlots(player.getUniqueId());
