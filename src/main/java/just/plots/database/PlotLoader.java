@@ -17,14 +17,14 @@ public class PlotLoader implements Runnable {
     public PlotLoader(JustPlots plots) {
         this.plots = plots;
 
-        loadPlots();
+        loadPlotWorlds();
 
         // Load the plots async - Not really necessary
         //plots.getServer().getScheduler().runTaskAsynchronously(plots, this);
         run();
     }
 
-    private void loadPlots() {
+    private void loadPlotWorlds() {
         ConfigurationSection worldsSection = plots.getConfig().getConfigurationSection("worlds");
 
         if (worldsSection != null) {
@@ -35,11 +35,7 @@ public class PlotLoader implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        long timer = System.currentTimeMillis();
-        plots.getLogger().info("Loading plots...");
-
+    private void loadPlots() {
         int counter = 0;
 
         try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement("SELECT * FROM justplots_plots")) {
@@ -67,6 +63,45 @@ public class PlotLoader implements Runnable {
             e.printStackTrace();
             return;
         }
+    }
+
+    private void loadAdded() {
+        int counter = 0;
+
+        try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement("SELECT * FROM justplots_added")) {
+            ResultSet results = statement.executeQuery();
+
+            while (results.next()) {
+                String world = results.getString("world");
+                int x = results.getInt("x");
+                int z = results.getInt("z");
+                String owner = results.getString("uuid");
+                try {
+                    Plot plot = JustPlots.getPlot(world, x, z);
+                    plot.getAdded().add(UUID.fromString(owner));
+                } catch (Exception e) {
+                    plots.getLogger().warning("Could not load added player for plot " + world + ";" + x + ";" + z);
+                    e.printStackTrace();
+                }
+
+                if (++counter % 10000 == 0) {
+                    plots.getLogger().info("Loading added players... (" + counter + ")");
+                }
+            }
+        } catch (SQLException e) {
+            plots.getLogger().severe("FAILED TO LOAD ADDED PLAYERS");
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    @Override
+    public void run() {
+        long timer = System.currentTimeMillis();
+        plots.getLogger().info("Loading plots...");
+
+        loadPlots();
+        loadAdded();
 
         plots.getLogger().info("Loaded plots (took " + (System.currentTimeMillis() - timer) + "ms)");
     }
