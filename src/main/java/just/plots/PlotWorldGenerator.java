@@ -78,7 +78,7 @@ public class PlotWorldGenerator extends ChunkGenerator {
     }
 
     private void generateRoad(PlotWorld plotWorld, int cx, int cz, ChunkData chunkData) {
-        int roadSize = (int) Math.floor(plotWorld.getRoadSize() / 2.0);
+        int roadSize = (int) Math.ceil(plotWorld.getRoadSize() / 2.0) - 1;
         int size = plotWorld.getPlotSize() + plotWorld.getRoadSize();
 
         for (int i = 0; i < 16; i ++) {
@@ -93,10 +93,18 @@ public class PlotWorldGenerator extends ChunkGenerator {
 
                 if (dx > size / 2) {
                     dx = size - dx;
+
+                    if (plotWorld.getRoadSize() % 2 == 0) {
+                        dx -= 1;
+                    }
                 }
 
                 if (dz > size / 2) {
                     dz = size - dz;
+
+                    if (plotWorld.getRoadSize() % 2 == 0) {
+                        dz -= 1;
+                    }
                 }
 
                 if ((dx == roadSize && dz >= roadSize) || (dz == roadSize && dx >= roadSize)) {

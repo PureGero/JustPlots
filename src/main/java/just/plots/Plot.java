@@ -2,15 +2,13 @@ package just.plots;
 
 import io.papermc.lib.PaperLib;
 import just.plots.events.PlotDeletedEvent;
-import just.plots.events.PlotPlayerAddEvent;
-import just.plots.events.PlotPlayerRemoveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.OfflinePlayer;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -225,10 +223,13 @@ public class Plot implements Comparable<Plot> {
     }
 
     public Location getHome() {
+        Location bottom = getBottom();
+        Location top = getTop();
+
         return new Location(Bukkit.getWorld(world),
-                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() / 2.0 + 0.5,
+                bottom.getBlockX() + (top.getBlockX() - bottom.getBlockX()) / 2.0 + 0.5,
                 plotWorld.getFloorHeight() + 1,
-                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 - 1);
+                bottom.getBlockZ() - 1.5);
     }
 
     public String getCreationDate() {
@@ -238,10 +239,11 @@ public class Plot implements Comparable<Plot> {
     }
 
     public Location getSign() {
-        return new Location(Bukkit.getWorld(world),
-                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0,
-                plotWorld.getFloorHeight() + 1,
-                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 - 1);
+        Location sign = getBottom();
+
+        sign.add(-1, plotWorld.getFloorHeight() + 1, -2);
+
+        return sign;
     }
 
     public CompletableFuture<Block> getSignBlockAsync() {
@@ -286,10 +288,13 @@ public class Plot implements Comparable<Plot> {
     private void setWalls(BlockData block) {
         ChunkBatcher chunkBatcher = new ChunkBatcher(Bukkit.getWorld(this.world));
 
-        int fromx = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2;
-        int fromz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2;
-        int tox = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize() + 1;
-        int toz = (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize() + 1;
+        Location top = getTop();
+        Location bottom = getBottom();
+
+        int fromx = bottom.getBlockX() - 1;
+        int fromz = bottom.getBlockZ() - 1;
+        int tox = top.getBlockX() + 1;
+        int toz = top.getBlockZ() + 1;
 
         for (int x = fromx; x <= tox; x++) {
             chunkBatcher.setBlock(x, plotWorld.getFloorHeight() + 1, fromz, block);
@@ -313,15 +318,15 @@ public class Plot implements Comparable<Plot> {
 
     public Location getBottom() {
         return new Location(Bukkit.getWorld(this.world),
-                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + 1,
+                Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0),
                 0,
-                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + 1);
+                Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0));
     }
 
     public Location getTop() {
         return new Location(Bukkit.getWorld(this.world),
-                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize(),
+                Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() - 1),
                 255,
-                (plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2 + plotWorld.getPlotSize());
+                Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() - 1));
     }
 }
