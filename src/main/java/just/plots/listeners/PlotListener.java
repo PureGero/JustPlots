@@ -1,7 +1,9 @@
 package just.plots.listeners;
 
+import io.papermc.lib.PaperLib;
 import just.plots.JustPlots;
 import just.plots.Plot;
+import just.plots.util.PaperUtil;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -15,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -100,6 +103,26 @@ public class PlotListener implements Listener {
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
         Plot fromPlot = JustPlots.getPlotAt(event.getBlock().getLocation());
+
+        Iterator<Block> iterator = event.blockList().iterator();
+
+        while (iterator.hasNext()) {
+            Plot toPlot = JustPlots.getPlotAt(iterator.next().getLocation());
+
+            if (fromPlot != toPlot) {
+                iterator.remove();
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        Plot fromPlot = JustPlots.getPlotAt(event.getEntity());
+
+        if (PaperLib.isPaper()) {
+            // Use their origin plot instead of wherever they are now
+            fromPlot = JustPlots.getPlotAt(PaperUtil.getOrigin(event.getEntity()));
+        }
 
         Iterator<Block> iterator = event.blockList().iterator();
 
