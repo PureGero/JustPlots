@@ -263,6 +263,12 @@ public class PlotListener implements Listener {
         Entity damager = getSource(event.getDamager());
         if (damager instanceof Player && !(event.getEntity() instanceof Player)) {
             playerModify((Player) damager, event.getEntity(), event);
+
+            if (event.isCancelled() && event.getDamager() instanceof Projectile) {
+                // Prevent the projectile from bouncing off and hitting them again
+                event.setDamage(0);
+                event.getDamager().remove();
+            }
         }
     }
 
