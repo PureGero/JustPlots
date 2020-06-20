@@ -89,7 +89,8 @@ public class JustPlots extends JavaPlugin {
      * Will always return a PlotWorld. Check if it's a valid plot world with
      * {@code PlotWorld.isPlotWorld()}.
      */
-    public static PlotWorld getPlotWorld(World world) {
+    @NotNull
+    public static PlotWorld getPlotWorld(@NotNull World world) {
         return getPlotWorld(world.getName());
     }
 
@@ -97,7 +98,8 @@ public class JustPlots extends JavaPlugin {
      * Will always return a PlotWorld. Check if it's a valid plot world with
      * {@code PlotWorld.isPlotWorld()}.
      */
-    public static PlotWorld getPlotWorld(String world) {
+    @NotNull
+    public static PlotWorld getPlotWorld(@NotNull String world) {
         PlotWorld plotWorld = plotWorlds.get(world);
 
         if (plotWorld == null) {
@@ -111,7 +113,7 @@ public class JustPlots extends JavaPlugin {
     /**
      * Returns true if the world is a valid plot world
      */
-    public static boolean isPlotWorld(World world) {
+    public static boolean isPlotWorld(@NotNull World world) {
         return getPlotWorld(world).isPlotWorld();
     }
 

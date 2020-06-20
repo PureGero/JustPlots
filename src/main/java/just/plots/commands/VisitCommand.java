@@ -75,7 +75,7 @@ public class VisitCommand extends SubCommand {
                 } else {
                     World world = Bukkit.getWorld(args[0]);
 
-                    if (world != null) {
+                    if (world != null && JustPlots.isPlotWorld(world)) {
                         sender.sendMessage(ChatColor.AQUA + "Teleported to plot world " + world.getName());
                         PaperLib.teleportAsync((Entity) sender, world.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
                         return true;

@@ -10,7 +10,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Dispenser;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -48,7 +47,7 @@ public class PlotListener implements Listener {
     }
 
     private void playerModify(Player player, Location location, Cancellable cancellable) {
-        if (!JustPlots.getPlotWorld(location.getWorld()).isPlotWorld()) {
+        if (!JustPlots.isPlotWorld(location.getWorld())) {
             return; // Not a plot world
         }
 
@@ -67,7 +66,7 @@ public class PlotListener implements Listener {
     }
 
     private void entityModify(Entity entity, Location location, Cancellable cancellable) {
-        if (!JustPlots.getPlotWorld(location.getWorld()).isPlotWorld()) {
+        if (!JustPlots.isPlotWorld(location.getWorld())) {
             return; // Not a plot world
         }
 
@@ -84,7 +83,7 @@ public class PlotListener implements Listener {
     }
 
     private void blockModify(Block from, Block to, Cancellable cancellable) {
-        if (!JustPlots.getPlotWorld(to.getWorld()).isPlotWorld()) {
+        if (!JustPlots.isPlotWorld(to.getWorld())) {
             return; // Not a plot world
         }
 
@@ -97,7 +96,7 @@ public class PlotListener implements Listener {
     }
 
     private void blockModify(Block block, Cancellable cancellable) {
-        if (!JustPlots.getPlotWorld(block.getWorld()).isPlotWorld()) {
+        if (!JustPlots.isPlotWorld(block.getWorld())) {
             return; // Not a plot world
         }
 
