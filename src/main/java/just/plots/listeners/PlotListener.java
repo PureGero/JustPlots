@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -254,15 +255,17 @@ public class PlotListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player) {
-            playerModify((Player) event.getDamager(), event.getEntity(), event);
+        Entity damager = getSource(event.getDamager());
+        if (damager instanceof Player) {
+            playerModify((Player) damager, event.getEntity(), event);
         }
     }
 
     @EventHandler
     public void onVehicleDamage(VehicleDamageEvent event) {
-        if (event.getAttacker() instanceof Player) {
-            playerModify((Player) event.getAttacker(), event.getVehicle(), event);
+        Entity attacker = getSource(event.getAttacker());
+        if (attacker instanceof Player) {
+            playerModify((Player) attacker, event.getVehicle(), event);
         }
     }
 
@@ -278,9 +281,18 @@ public class PlotListener implements Listener {
 
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent event) {
-        if (event.getRemover() instanceof Player) {
-            playerModify((Player) event.getRemover(), event.getEntity(), event);
+        Entity remover = getSource(event.getRemover());
+        if (remover instanceof Player) {
+            playerModify((Player) remover, event.getEntity(), event);
         }
+    }
+
+    private Entity getSource(Entity entity) {
+        if (entity instanceof Projectile && ((Projectile) entity).getShooter() instanceof Entity) {
+            return getSource((Entity) ((Projectile) entity).getShooter());
+        }
+
+        return entity;
     }
 
 }
