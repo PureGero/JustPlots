@@ -114,6 +114,13 @@ public class PlotListener implements Listener {
         if (event.getClickedBlock() != null) {
             playerModify(event.getPlayer(), event.getClickedBlock(), event);
         }
+
+        if (event.getClickedBlock() == null) {
+            Block block = event.getPlayer().getTargetBlock(5);
+            if (block != null) {
+                playerModify(event.getPlayer(), block, event);
+            }
+        }
     }
 
     @EventHandler
