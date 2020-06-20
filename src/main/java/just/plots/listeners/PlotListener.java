@@ -11,21 +11,18 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Directional;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.projectiles.BlockProjectileSource;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.Iterator;
 
@@ -322,14 +319,58 @@ public class PlotListener implements Listener {
         }
     }
 
+    private ProjectileSource lastEggThrower = null;
+
     @EventHandler
-    public void onEntityChangeBlock(EntityChangeBlockEvent e) {
-        entityModify(e.getEntity(), e.getBlock(), e);
+    public void onEggHit(ProjectileHitEvent event) {
+        if (event.getEntity() instanceof Egg) {
+            if (!JustPlots.isPlotWorld(event.getEntity().getWorld())) {
+                return; // Not a plot world
+            }
+
+            lastEggThrower = event.getEntity().getShooter();
+        }
     }
 
     @EventHandler
-    public void onEntityBlockForm(EntityBlockFormEvent e) {
-        entityModify(e.getEntity(), e.getBlock(), e);
+    public void onEggSpawnChicken(CreatureSpawnEvent event) {
+        if (event.getEntity() instanceof Chicken && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.EGG && lastEggThrower != null) {
+
+            if (!JustPlots.isPlotWorld(event.getEntity().getWorld())) {
+                return; // Not a plot world
+            }
+
+            if (lastEggThrower instanceof Player) {
+                Player player = (Player) lastEggThrower;
+
+                Plot plot = JustPlots.getPlotAt(event.getEntity());
+
+                if ((plot == null || !plot.isAdded(player)) && !player.hasPermission("justplots.edit.other")) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+                            new ComponentBuilder("You cannot build here").color(ChatColor.RED).create());
+
+                    event.setCancelled(true);
+                }
+
+            } else if (lastEggThrower instanceof BlockProjectileSource) {
+                Plot from = JustPlots.getPlotAt(((BlockProjectileSource) lastEggThrower).getBlock().getLocation());
+                Plot to = JustPlots.getPlotAt(event.getEntity());
+
+                if (to != from) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityChangeBlock(EntityChangeBlockEvent event) {
+        entityModify(event.getEntity(), event.getBlock(), event);
+    }
+
+    @EventHandler
+    public void onEntityBlockForm(EntityBlockFormEvent event) {
+        entityModify(event.getEntity(), event.getBlock(), event);
     }
 
     private Entity getSource(Entity entity) {
