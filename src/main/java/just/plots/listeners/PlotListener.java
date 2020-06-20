@@ -256,7 +256,7 @@ public class PlotListener implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         Entity damager = getSource(event.getDamager());
-        if (damager instanceof Player) {
+        if (damager instanceof Player && !(event.getEntity() instanceof Player)) {
             playerModify((Player) damager, event.getEntity(), event);
         }
     }
