@@ -22,6 +22,7 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -119,7 +120,7 @@ public class PlotListener implements Listener {
 
         if (event.getClickedBlock() == null) {
             Block block = event.getPlayer().getTargetBlock(5);
-            if (block != null) {
+            if (block != null && !block.isEmpty()) {
                 playerModify(event.getPlayer(), block, event);
             }
         }
@@ -300,6 +301,13 @@ public class PlotListener implements Listener {
     public void onBlockDispense(BlockDispenseEvent event) {
         Block facing = event.getBlock().getRelative(((Directional) event.getBlock().getBlockData()).getFacing());
         blockModify(event.getBlock(), facing, event);
+    }
+
+    @EventHandler
+    public void onPlayerFish(PlayerFishEvent event) {
+        if (event.getCaught() != null) {
+            playerModify(event.getPlayer(), event.getCaught(), event);
+        }
     }
 
     private Entity getSource(Entity entity) {
