@@ -21,6 +21,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.LingeringPotionSplashEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -307,6 +309,20 @@ public class PlotListener implements Listener {
     public void onPlayerFish(PlayerFishEvent event) {
         if (event.getCaught() != null) {
             playerModify(event.getPlayer(), event.getCaught(), event);
+        }
+    }
+
+    @EventHandler
+    public void onPotionSplash(PotionSplashEvent event) {
+        if (event.getEntity().getShooter() instanceof Player) {
+            playerModify((Player) event.getEntity().getShooter(), event.getEntity(), event);
+        }
+    }
+
+    @EventHandler
+    public void onLingeringPotionSplash(LingeringPotionSplashEvent event) {
+        if (event.getEntity().getShooter() instanceof Player) {
+            playerModify((Player) event.getEntity().getShooter(), event.getEntity(), event);
         }
     }
 
