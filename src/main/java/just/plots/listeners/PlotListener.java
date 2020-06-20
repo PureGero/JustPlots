@@ -19,7 +19,6 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -53,6 +52,27 @@ public class PlotListener implements Listener {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                     new ComponentBuilder("You cannot build here").color(ChatColor.RED).create());
 
+            cancellable.setCancelled(true);
+        }
+    }
+
+    private void entityModify(Entity entity, Block block, Cancellable cancellable) {
+        entityModify(entity, block.getLocation(), cancellable);
+    }
+
+    private void entityModify(Entity entity, Location location, Cancellable cancellable) {
+        if (!JustPlots.getPlotWorld(location.getWorld()).isPlotWorld()) {
+            return; // Not a plot world
+        }
+
+        Plot originPlot = JustPlots.getPlotAt(entity);
+        if (PaperLib.isPaper()) {
+            originPlot = JustPlots.getPlotAt(PaperUtil.getOrigin(entity));
+        }
+
+        Plot plot = JustPlots.getPlotAt(location);
+
+        if (plot == null || originPlot != plot) {
             cancellable.setCancelled(true);
         }
     }
@@ -184,6 +204,11 @@ public class PlotListener implements Listener {
     public void onBlockIgnite(BlockIgniteEvent event) {
         if (event.getIgnitingBlock() != null) {
             blockModify(event.getIgnitingBlock(), event.getBlock(), event);
+        }
+        if (event.getIgnitingEntity() instanceof Player) {
+            playerModify((Player) event.getIgnitingEntity(), event.getBlock(), event);
+        } else if (event.getIgnitingEntity() != null) {
+            entityModify(event.getIgnitingEntity(), event.getBlock(), event);
         }
     }
 
