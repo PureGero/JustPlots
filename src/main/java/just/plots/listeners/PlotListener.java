@@ -10,6 +10,8 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -292,6 +294,12 @@ public class PlotListener implements Listener {
         if (remover instanceof Player) {
             playerModify((Player) remover, event.getEntity(), event);
         }
+    }
+
+    @EventHandler
+    public void onBlockDispense(BlockDispenseEvent event) {
+        Block facing = event.getBlock().getRelative(((Directional) event.getBlock().getBlockData()).getFacing());
+        blockModify(event.getBlock(), facing, event);
     }
 
     private Entity getSource(Entity entity) {
