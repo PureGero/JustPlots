@@ -2,6 +2,7 @@ package just.plots.listeners;
 
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.RegionMask;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
@@ -13,6 +14,7 @@ import just.plots.events.PlotDeletedEvent;
 import just.plots.events.PlotEnterEvent;
 import just.plots.events.PlotPlayerAddEvent;
 import just.plots.events.PlotPlayerRemoveEvent;
+import just.plots.util.JustPlotsRegionMask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -49,7 +51,7 @@ public class WorldEditListener implements Listener {
     }
 
     public void setup(Player player) {
-        if (JustPlots.getPlotWorld(player.getWorld()).isPlotWorld()) {
+        if (JustPlots.isPlotWorld(player.getWorld())) {
             Plot plot = JustPlots.getPlotAt(player);
 
             if (WeanywhereCommand.isWeanywhere(player)) {
@@ -69,7 +71,12 @@ public class WorldEditListener implements Listener {
 
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent e) {
-        setup(e.getPlayer());
+        if (JustPlots.isPlotWorld(e.getFrom()) && !JustPlots.isPlotWorld(e.getPlayer().getWorld())
+                && isJustPlotsMask(e.getPlayer())) {
+            removeMask(e.getPlayer());
+        } else {
+            setup(e.getPlayer());
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -81,35 +88,40 @@ public class WorldEditListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlotPlayerAdded(PlotPlayerAddEvent e) {
-        if (e.getPlayer() != null && !WeanywhereCommand.isWeanywhere(e.getPlayer()) && JustPlots.getPlotAt(e.getPlayer()) == e.getPlot()) {
+        if (e.getPlayer() != null && JustPlots.getPlotAt(e.getPlayer()) == e.getPlot()) {
             setMask(e.getPlayer(), e.getPlot());
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlotPlayerRemoved(PlotPlayerRemoveEvent e) {
-        if (e.getPlayer() != null) {
-            // Resetup the player after they have been remove incase the mask
-            // was set to the plot they were removed from
+        if (e.getPlayer() != null && getMaskPlot(e.getPlayer()) == e.getPlot()) {
             Bukkit.getScheduler().runTask(JustPlots.getPlugin(), () -> setup(e.getPlayer()));
         }
     }
 
     @EventHandler
     public void onPlotPlayerRemoved(PlotDeletedEvent e) {
-        // Resetup players after the plot has been deleted incase the mask
-        // was set to the plot they were removed from
         Player player;
 
         for (UUID added : e.getPlot().getAdded()) {
-            if ((player = Bukkit.getPlayer(added)) != null) {
+            if ((player = Bukkit.getPlayer(added)) != null && getMaskPlot(player) == e.getPlot()) {
                 setup(player);
             }
         }
 
-        if ((player = Bukkit.getPlayer(e.getPlot().getOwner())) != null) {
+        if ((player = Bukkit.getPlayer(e.getPlot().getOwner())) != null && getMaskPlot(player) == e.getPlot()) {
             setup(player);
         }
+    }
+
+    private boolean isJustPlotsMask(Player player) {
+        return worldEditPlugin.getSession(player).getMask() instanceof JustPlotsRegionMask;
+    }
+
+    private Plot getMaskPlot(Player player) {
+        Mask mask = worldEditPlugin.getSession(player).getMask();
+        return mask instanceof JustPlotsRegionMask ? ((JustPlotsRegionMask) mask).getPlot() : null;
     }
 
     private void setMask(Player player, Plot plot) {
@@ -129,7 +141,7 @@ public class WorldEditListener implements Listener {
         BlockVector3 pos2 = BlockVector3.at(top.getBlockX(), top.getBlockY(), top.getBlockZ());
 
         CuboidRegion cuboidRegion = new CuboidRegion(world, pos1, pos2);
-        RegionMask regionMask = new RegionMask(cuboidRegion);
+        RegionMask regionMask = new JustPlotsRegionMask(cuboidRegion, plot);
         localSession.setMask(regionMask);
     }
 
