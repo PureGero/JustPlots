@@ -11,6 +11,17 @@ public abstract class SubCommand {
     private final String description;
     private final String[] aliases;
 
+    /**
+     * Whether this command has been added by an external plugin or not
+     */
+    private boolean customCommand = false;
+
+    /**
+     * A command to be run by the /plot command
+     * @param usage The usage of this command (eg {@code "/p add <player>"}
+     * @param description The description of this command
+     * @param aliases The name of this command, and any aliases
+     */
     public SubCommand(String usage, String description, String... aliases) {
         this.usage = usage;
         this.name = aliases[0];
@@ -43,5 +54,17 @@ public abstract class SubCommand {
 
     public String getPermission() {
         return null;
+    }
+
+    /**
+     * Whether this command has been added by an external plugin or not
+     * @return Returns true if this command has been added by an external plugin
+     */
+    public final boolean isCustomCommand() {
+        return customCommand;
+    }
+
+    final void setCustomCommand(boolean customCommand) {
+        this.customCommand = customCommand;
     }
 }

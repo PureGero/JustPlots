@@ -68,10 +68,18 @@ public class HelpCommand extends SubCommand {
             SubCommand command = commandList.get(i);
             String usage = command.getUsage();
 
-            sender.spigot().sendMessage(new ComponentBuilder(usage).color(ChatColor.AQUA)
+            ComponentBuilder commandText = new ComponentBuilder();
+
+            if (command.isCustomCommand()) {
+                commandText.append("* ").color(ChatColor.GOLD).bold(true);
+            }
+
+            commandText.append(usage).color(ChatColor.AQUA)
                     .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(usage).create()))
                     .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, usage))
-                    .append(": " + command.getDescription()).reset().create());
+                    .append(": " + command.getDescription()).reset();
+
+            sender.spigot().sendMessage(commandText.create());
         }
 
         return true;

@@ -2,14 +2,20 @@ package net.justminecraft.plots;
 
 import org.bukkit.*;
 import org.bukkit.block.Biome;
+import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class PlotWorldGenerator extends ChunkGenerator {
 
     private static final double sqrt2 = Math.sqrt(2);
+
+    private ArrayList<BlockPopulator> blockPopulators = new ArrayList<>();
 
     public PlotWorldGenerator() {
         for (PlotWorld plotWorld : JustPlots.getPlotWorlds()) {
@@ -17,6 +23,12 @@ public class PlotWorldGenerator extends ChunkGenerator {
                 boolean firstTimeGenerating = !new File(plotWorld.getWorld()).isDirectory();
 
                 World world = Bukkit.createWorld(new WorldCreator(plotWorld.getWorld()).generator(this));
+
+                if (world == null) {
+                    JustPlots.getPlugin().getLogger().warning("Failed to load world " + plotWorld.getWorld());
+                    continue;
+                }
+
                 world.setKeepSpawnInMemory(false);
 
                 if (firstTimeGenerating) {
@@ -32,8 +44,29 @@ public class PlotWorldGenerator extends ChunkGenerator {
         }
     }
 
+    @NotNull
+    public List<BlockPopulator> getDefaultPopulators(@NotNull World world) {
+        return blockPopulators;
+    }
+
+    /**
+     * Add a block populator to the plot world generator. This will also add the
+     * block populator to existing worlds using the generator.
+     * @param blockPopulator The block populator to add
+     */
+    public void addBlockPopulator(BlockPopulator blockPopulator) {
+        blockPopulators.add(blockPopulator);
+
+        for (World world : Bukkit.getWorlds()) {
+            if (world.getGenerator() == this) {
+                world.getPopulators().add(blockPopulator);
+            }
+        }
+    }
+
+    @NotNull
     @Override
-    public ChunkData generateChunkData(World world, Random random, int cx, int cz, BiomeGrid biomeGrid) {
+    public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int cx, int cz, @NotNull BiomeGrid biomeGrid) {
         PlotWorld plotWorld = JustPlots.getPlotWorld(world);
 
         if (!plotWorld.isPlotWorld()) {

@@ -17,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
@@ -41,6 +42,9 @@ public class JustPlots extends JavaPlugin {
         return plugin;
     }
 
+    private JustPlotsCommand justPlotsCommand;
+    private PlotWorldGenerator plotWorldGenerator;
+
     @Override
     public void onEnable() {
         plugin = this;
@@ -54,9 +58,9 @@ public class JustPlots extends JavaPlugin {
 
         new PlotLoader(this);
 
-        new JustPlotsCommand(this);
+        justPlotsCommand = new JustPlotsCommand(this);
 
-        new PlotWorldGenerator();
+        plotWorldGenerator = new PlotWorldGenerator();
 
         new PlayerListener(this);
         new PlotListener(this);
@@ -82,6 +86,12 @@ public class JustPlots extends JavaPlugin {
     public void onDisable() {
         getLogger().info("Closing database connection");
         database.closeConnection();
+    }
+
+    @Nullable
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, @Nullable String id) {
+        return plotWorldGenerator;
     }
 
     /**
@@ -301,6 +311,18 @@ public class JustPlots extends JavaPlugin {
         }
 
         return maxPlots;
+    }
+
+    /**
+     * Get the default generator for plot worlds
+     * @return The generator used by plot worlds
+     */
+    public static PlotWorldGenerator getGenerator() {
+        return getPlugin().plotWorldGenerator;
+    }
+
+    public static JustPlotsCommand getCommandExecuter() {
+        return getPlugin().justPlotsCommand;
     }
 
 }
