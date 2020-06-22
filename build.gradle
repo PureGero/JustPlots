@@ -73,7 +73,7 @@ processResources {
 apply plugin: "com.github.johnrengelman.shadow"
 
 shadowJar {
-  relocate 'io.papermc.lib', 'just.plots.paperlib'
+  relocate 'io.papermc.lib', 'net.justminecraft.plots.paperlib'
 }
 
 tasks.build.dependsOn tasks.shadowJar

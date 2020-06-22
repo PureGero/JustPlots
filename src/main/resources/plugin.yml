@@ -1,6 +1,6 @@
 name: ${name}
 version: ${version}
-main: just.plots.JustPlots
+main: net.justminecraft.plots.JustPlots
 author: PureGero
 api-version: 1.13
 softdepend: [Multiverse-Core, WorldEdit, Essentials]
