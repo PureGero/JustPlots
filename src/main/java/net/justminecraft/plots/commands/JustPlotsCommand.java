@@ -21,7 +21,7 @@ public class JustPlotsCommand implements CommandExecutor, TabCompleter {
     public JustPlotsCommand(JustPlots plots) {
         this.plots = plots;
 
-        PluginCommand justPlots = plots.getCommand("justplots");
+        PluginCommand justPlots = plots.getCommand("p");
 
         if (justPlots == null) {
             throw new RuntimeException("Could not find command /justplots (is it registered in the plugin.yml?)");
@@ -43,6 +43,7 @@ public class JustPlotsCommand implements CommandExecutor, TabCompleter {
         addCommand(new DisposeCommand());
         addCommand(new MiddleCommand());
         addCommand(new WeanywhereCommand());
+        addCommand(new PluginInfoCommand());
         addCommand(helpCommand);
 
         // Any future commands added will be marked as custom commands
