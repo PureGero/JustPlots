@@ -3,12 +3,13 @@ version: ${version}
 main: net.justminecraft.plots.JustPlots
 author: PureGero
 api-version: 1.13
+loadbefore: [VoxelSniper] # We're greedy, give us the /p
 softdepend: [Multiverse-Core, WorldEdit, Essentials]
 website: https://github.com/PureGero/JustPlots
 commands:
-  justplots:
+  p:
     description: JustPlots command
-    aliases: [p, plot, plots, jp, justplot, plotme]
+    aliases: [justplots, plot, plots, jp, justplot, plotme]
 permissions:
   justplots.add:
     description: Add a player to your plot
