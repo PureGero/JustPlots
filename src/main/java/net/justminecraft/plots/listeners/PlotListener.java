@@ -1,6 +1,5 @@
 package net.justminecraft.plots.listeners;
 
-import io.papermc.lib.PaperLib;
 import net.justminecraft.plots.JustPlots;
 import net.justminecraft.plots.Plot;
 import net.justminecraft.plots.util.PaperUtil;
@@ -18,7 +17,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.projectiles.BlockProjectileSource;
@@ -64,10 +66,7 @@ public class PlotListener implements Listener {
             return; // Not a plot world
         }
 
-        Plot originPlot = JustPlots.getPlotAt(entity);
-        if (PaperLib.isPaper()) {
-            originPlot = JustPlots.getPlotAt(PaperUtil.getOrigin(entity));
-        }
+        Plot originPlot = JustPlots.getPlotAt(PaperUtil.getOrigin(entity));
 
         Plot plot = JustPlots.getPlotAt(location);
 
@@ -143,12 +142,7 @@ public class PlotListener implements Listener {
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
-        Plot fromPlot = JustPlots.getPlotAt(event.getEntity());
-
-        if (PaperLib.isPaper()) {
-            // Use their origin plot instead of wherever they are now
-            fromPlot = JustPlots.getPlotAt(PaperUtil.getOrigin(event.getEntity()));
-        }
+        Plot fromPlot = JustPlots.getPlotAt(PaperUtil.getOrigin(event.getEntity()));
 
         Iterator<Block> iterator = event.blockList().iterator();
 
@@ -336,6 +330,12 @@ public class PlotListener implements Listener {
 
             lastEggThrower = event.getEntity().getShooter();
         }
+    }
+
+    @EventHandler
+    public void onEntitySpawn(EntitySpawnEvent event) {
+        // Ensure the origin is set on the entity
+        PaperUtil.getOrigin(event.getEntity());
     }
 
     @EventHandler

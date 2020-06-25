@@ -325,7 +325,7 @@ public class Plot implements Comparable<Plot> {
 
         AsyncUtil.ensureMainThread(() -> {
             for (Entity entity : world.getEntities()) {
-                if (!(entity instanceof Player) && (inPlot(entity) || (PaperLib.isPaper() && inPlot(PaperUtil.getOrigin(entity))))) {
+                if (!(entity instanceof Player) && (inPlot(entity) || inPlot(PaperUtil.getOrigin(entity)))) {
                     entity.remove();
                 }
             }
