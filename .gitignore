@@ -10,6 +10,7 @@ eclipse
 .metadata
 bin
 *~
+fileTemplates
 
 build
 .gradle
