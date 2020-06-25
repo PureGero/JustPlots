@@ -4,6 +4,7 @@ import io.papermc.lib.PaperLib;
 import net.justminecraft.plots.JustPlots;
 import net.justminecraft.plots.Plot;
 import net.justminecraft.plots.PlotId;
+import net.justminecraft.plots.util.PaperUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -50,7 +51,7 @@ public class AutoCommand extends SubCommand {
 
         sender.sendMessage(ChatColor.GREEN + "Succesfully claimed plot " + plot);
 
-        PaperLib.teleportAsync((Entity) sender, plot.getHome(), PlayerTeleportEvent.TeleportCause.COMMAND);
+        PaperUtil.teleportAsync((Entity) sender, plot.getHome(), PlayerTeleportEvent.TeleportCause.COMMAND);
 
         return true;
     }

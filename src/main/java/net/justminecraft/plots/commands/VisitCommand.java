@@ -1,8 +1,8 @@
 package net.justminecraft.plots.commands;
 
-import io.papermc.lib.PaperLib;
 import net.justminecraft.plots.JustPlots;
 import net.justminecraft.plots.Plot;
+import net.justminecraft.plots.util.PaperUtil;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -77,7 +77,7 @@ public class VisitCommand extends SubCommand {
 
                     if (world != null && JustPlots.isPlotWorld(world)) {
                         sender.sendMessage(ChatColor.AQUA + "Teleported to plot world " + world.getName());
-                        PaperLib.teleportAsync((Entity) sender, world.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
+                        PaperUtil.teleportAsync((Entity) sender, world.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
                         return true;
                     }
 
@@ -126,7 +126,7 @@ public class VisitCommand extends SubCommand {
         }
 
         sender.sendMessage(ChatColor.AQUA + String.format(format, i + 1));
-        PaperLib.teleportAsync((Entity) sender, location, PlayerTeleportEvent.TeleportCause.COMMAND);
+        PaperUtil.teleportAsync((Entity) sender, location, PlayerTeleportEvent.TeleportCause.COMMAND);
 
         return true;
     }
