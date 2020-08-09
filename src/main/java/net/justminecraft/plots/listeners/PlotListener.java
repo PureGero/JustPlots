@@ -17,10 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.projectiles.BlockProjectileSource;
@@ -377,6 +374,16 @@ public class PlotListener implements Listener {
     @EventHandler
     public void onEntityBlockForm(EntityBlockFormEvent event) {
         entityModify(event.getEntity(), event.getBlock(), event);
+    }
+
+    @EventHandler
+    public void onBucketFill(PlayerBucketFillEvent event) {
+        playerModify(event.getPlayer(), event.getBlock(), event);
+    }
+
+    @EventHandler
+    public void onBucketEmpty(PlayerBucketEmptyEvent event) {
+        playerModify(event.getPlayer(), event.getBlock(), event);
     }
 
     private Entity getSource(Entity entity) {
