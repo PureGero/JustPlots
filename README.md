@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-  compileOnly "net.justminecraft.plots:justplots:0.9.5"
+  compileOnly "net.justminecraft.plots:JustPlots:0.9.5"
 }
 ```
 
@@ -44,7 +44,7 @@ Or in your pom.xml:
 <dependencies>
     <dependency>
         <groupId>net.justminecraft.plots</groupId>
-        <artifactId>justplots</artifactId>
+        <artifactId>JustPlots</artifactId>
         <version>0.9.5</version>
         <scope>provided</scope>
     </dependency>
