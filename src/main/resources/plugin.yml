@@ -1,8 +1,9 @@
-name: ${name}
-version: ${version}
+name: ${project.name}
+version: ${project.version}
+description: ${project.description}
 main: net.justminecraft.plots.JustPlots
 author: PureGero
-api-version: 1.13
+api-version: 1.15
 loadbefore: [VoxelSniper] # We're greedy, give us the /p
 softdepend: [Multiverse-Core, WorldEdit, Essentials]
 website: https://github.com/PureGero/JustPlots
