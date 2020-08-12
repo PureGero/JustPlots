@@ -1,32 +1,20 @@
-Downloading
+Contributing
 ==========
 Download the source code with
 
     $ git clone https://github.com/PureGero/JustPlots.git
 
-A folder will be created called `JustPlots` with the source code inside
-
-IDEs
-====
-Setup an Eclipse workspace with
-
-    $ ./gradlew eclipse
-
-Setup an IntelliJ workspace with
-
-    $ ./graldew idea
+A folder will be created called `JustPlots` with the source code inside. You can
+open this folder with your favourite IDE (eg Eclipse or IntelliJ) and begin
+editing.
 
 Compiling
 =========
 Compile the source with gradle:
 
-    $ ./gradlew build
+    $ mvn
 
-Or on widows:
-
-    > gradlew build
-
-The plugin jar will be found in `build/libs`. Enjoy!
+The plugin jar will be found in `target`. Enjoy!
 
 JustPlots as a dependency
 =========================
@@ -40,6 +28,25 @@ repositories {
 }
 
 dependencies {
-  compileOnly "just.plots:justplots:0.9.2"
+  compileOnly "net.justminecraft.plots:justplots:0.9.5"
 }
+```
+
+Or in your pom.xml:
+
+```
+<repositories>
+    <repository>
+        <id>justplots-repo</id>
+        <url>https://raw.githubusercontent.com/PureGero/JustPlots/repository/</url>
+    </repository>
+</repositories>
+<dependencies>
+    <dependency>
+        <groupId>net.justminecraft.plots</groupId>
+        <artifactId>justplots</artifactId>
+        <version>0.9.5</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
 ```
