@@ -124,6 +124,10 @@ public class PlotListener implements Listener {
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
+        if (!JustPlots.isPlotWorld(event.getBlock().getWorld())) {
+            return; // Not a plot world
+        }
+
         Plot fromPlot = JustPlots.getPlotAt(event.getBlock().getLocation());
 
         Iterator<Block> iterator = event.blockList().iterator();
@@ -139,6 +143,10 @@ public class PlotListener implements Listener {
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
+        if (!JustPlots.isPlotWorld(event.getLocation().getWorld())) {
+            return; // Not a plot world
+        }
+
         Plot fromPlot = JustPlots.getPlotAt(PaperUtil.getOrigin(event.getEntity()));
 
         Iterator<Block> iterator = event.blockList().iterator();
@@ -159,6 +167,10 @@ public class PlotListener implements Listener {
 
     @EventHandler
     public void onBlockFertilize(BlockFertilizeEvent event) {
+        if (!JustPlots.isPlotWorld(event.getBlock().getWorld())) {
+            return; // Not a plot world
+        }
+
         Plot fromPlot = JustPlots.getPlotAt(event.getBlock().getLocation());
 
         Iterator<BlockState> iterator = event.getBlocks().iterator();
@@ -174,6 +186,10 @@ public class PlotListener implements Listener {
 
     @EventHandler
     public void onStructureGrow(StructureGrowEvent event) {
+        if (!JustPlots.isPlotWorld(event.getLocation().getWorld())) {
+            return; // Not a plot world
+        }
+
         Plot fromPlot = JustPlots.getPlotAt(event.getLocation());
 
         Iterator<BlockState> iterator = event.getBlocks().iterator();
@@ -236,6 +252,10 @@ public class PlotListener implements Listener {
 
     @EventHandler
     public void onSpongeAbsorb(SpongeAbsorbEvent event) {
+        if (!JustPlots.isPlotWorld(event.getBlock().getWorld())) {
+            return; // Not a plot world
+        }
+
         Plot fromPlot = JustPlots.getPlotAt(event.getBlock().getLocation());
 
         Iterator<BlockState> iterator = event.getBlocks().iterator();
