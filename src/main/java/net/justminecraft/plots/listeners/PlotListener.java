@@ -372,6 +372,7 @@ public class PlotListener implements Listener {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                             new ComponentBuilder("You cannot build here").color(ChatColor.RED).create());
 
+                    event.getEntity().remove();
                     event.setCancelled(true);
                 }
 
@@ -380,6 +381,7 @@ public class PlotListener implements Listener {
                 Plot to = JustPlots.getPlotAt(event.getEntity());
 
                 if (to != from) {
+                    event.getEntity().remove();
                     event.setCancelled(true);
                 }
             }
