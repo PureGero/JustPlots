@@ -118,6 +118,10 @@ public class PlotWorld {
     }
 
     public PlotId nextAutoClaimPlot() {
+        if (!isPlotWorld()) {
+            return null;
+        }
+
         while (true) {
             for (int x = -autoClaimDistance; x <= autoClaimDistance; x++) {
                 PlotId id = new PlotId(x, autoClaimDistance);
