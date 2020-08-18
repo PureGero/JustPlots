@@ -58,7 +58,7 @@ public class HelpCommand extends SubCommand {
 
             sender.spigot().sendMessage(new ComponentBuilder("Use ").color(ChatColor.GRAY).append(nextPage)
                     .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(nextPage).create()))
-                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, nextPage))
+                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, nextPage))
                     .append(" to view the next page").reset().color(ChatColor.GRAY).create());
         } else {
             sender.sendMessage(ChatColor.GRAY + "This is the last page");
@@ -76,7 +76,7 @@ public class HelpCommand extends SubCommand {
 
             commandText.append(usage).color(ChatColor.AQUA)
                     .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(usage).create()))
-                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, usage))
+                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
                     .append(": " + command.getDescription()).reset();
 
             sender.spigot().sendMessage(commandText.create());
