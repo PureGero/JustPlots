@@ -24,7 +24,7 @@ public class WeanywhereCommand extends SubCommand {
     }
 
     public WeanywhereCommand() {
-        super("/p weanywhere", "Get info about the plot", "weanywhere", "wea");
+        super("/p weanywhere", "Toggle using worldedit anywhere", "weanywhere", "wea");
     }
 
     @Override
