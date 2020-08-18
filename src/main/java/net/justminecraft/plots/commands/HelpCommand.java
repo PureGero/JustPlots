@@ -74,7 +74,7 @@ public class HelpCommand extends SubCommand {
                 commandText.append("* ").color(ChatColor.GOLD).bold(true);
             }
 
-            commandText.append(usage).color(ChatColor.AQUA)
+            commandText.append(usage).color(ChatColor.AQUA).bold(false)
                     .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(usage).create()))
                     .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, usage))
                     .append(": " + command.getDescription()).reset();
