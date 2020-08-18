@@ -204,6 +204,10 @@ public class Plot implements Comparable<Plot> {
         return world;
     }
 
+    public World getWorld() {
+        return Bukkit.getWorld(getWorldName());
+    }
+
     public PlotWorld getPlotWorld() {
         return plotWorld;
     }
@@ -224,7 +228,7 @@ public class Plot implements Comparable<Plot> {
         Location bottom = getBottom();
         Location top = getTop();
 
-        return new Location(Bukkit.getWorld(world),
+        return new Location(getWorld(),
                 bottom.getBlockX() + (top.getBlockX() - bottom.getBlockX()) / 2.0 + 0.5,
                 plotWorld.getFloorHeight() + 1,
                 bottom.getBlockZ() - 1.5);
@@ -284,7 +288,7 @@ public class Plot implements Comparable<Plot> {
     }
 
     private void setWalls(BlockData block) {
-        ChunkBatcher chunkBatcher = new ChunkBatcher(Bukkit.getWorld(this.world));
+        ChunkBatcher chunkBatcher = new ChunkBatcher(getWorld());
 
         Location top = getTop();
         Location bottom = getBottom();
@@ -317,7 +321,7 @@ public class Plot implements Comparable<Plot> {
     }
 
     private void clearEntities() {
-        World world = Bukkit.getWorld(this.world);
+        World world = getWorld();
 
         if (world == null) {
             return;
@@ -345,14 +349,14 @@ public class Plot implements Comparable<Plot> {
     }
 
     public Location getBottom() {
-        return new Location(Bukkit.getWorld(this.world),
+        return new Location(getWorld(),
                 Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0),
                 0,
                 Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0));
     }
 
     public Location getTop() {
-        return new Location(Bukkit.getWorld(this.world),
+        return new Location(getWorld(),
                 Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() - 1),
                 255,
                 Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() - 1));
@@ -362,7 +366,7 @@ public class Plot implements Comparable<Plot> {
         Location bottom = getBottom();
         Location top = getTop();
 
-        return new Location(Bukkit.getWorld(world),
+        return new Location(getWorld(),
                 bottom.getBlockX() + (top.getBlockX() - bottom.getBlockX()) / 2.0 + 0.5,
                 plotWorld.getFloorHeight() + 1,
                 bottom.getBlockZ() + (top.getBlockZ() - bottom.getBlockZ()) / 2.0 + 0.5);
@@ -371,7 +375,7 @@ public class Plot implements Comparable<Plot> {
     public List<Player> getPlayersInPlot() {
         List<Player> players = new ArrayList<>();
 
-        World world = Bukkit.getWorld(this.world);
+        World world = getWorld();
 
         if (world != null) {
             for (Player player : world.getPlayers()) {
