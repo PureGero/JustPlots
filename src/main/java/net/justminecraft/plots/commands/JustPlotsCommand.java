@@ -111,11 +111,12 @@ public class JustPlotsCommand implements CommandExecutor, TabCompleter {
             }
 
         } else if (args.length == 1) {
-            for (String key : commands.keySet()) {
-                if (key.startsWith(args[0].toLowerCase())) {
+            commands.forEach((key, subCommand) -> {
+                if ((subCommand.getPermission() == null || sender.hasPermission(subCommand.getPermission()))
+                        && key.startsWith(args[0].toLowerCase())) {
                     tabCompletion.add(key);
                 }
-            }
+            });
         }
 
         return tabCompletion;
