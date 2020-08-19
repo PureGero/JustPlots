@@ -269,7 +269,8 @@ public class JustPlots extends JavaPlugin {
         return plot;
     }
 
-    public static String getUsername(UUID uuid) {
+    @NotNull
+    public static String getUsername(@NotNull UUID uuid) {
         String name = Bukkit.getOfflinePlayer(uuid).getName();
 
         if (name != null) {
@@ -285,7 +286,7 @@ public class JustPlots extends JavaPlugin {
             }
         }
 
-        return name;
+        return name == null ? uuid.toString() : name;
     }
 
     public static int getMaxPlots(Permissible player) {
