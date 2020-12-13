@@ -6,7 +6,7 @@
 
     <groupId>net.justminecraft.plots</groupId>
     <artifactId>JustPlots</artifactId>
-    <version>0.9.5</version>
+    <version>0.9.6</version>
     <description>Just a plots plugin for spigot, not much else</description>
     
     <name>JustPlots</name>
