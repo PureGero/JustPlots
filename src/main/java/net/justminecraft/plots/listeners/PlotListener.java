@@ -408,6 +408,13 @@ public class PlotListener implements Listener {
         playerModify(event.getPlayer(), event.getBlock(), event);
     }
 
+    @EventHandler
+    public void onEntityTeleport(EntityTeleportEvent event) {
+        if (event.getTo() != null) {
+            entityModify(event.getEntity(), event.getTo(), event);
+        }
+    }
+
     private Entity getSource(Entity entity) {
         if (entity instanceof Projectile && ((Projectile) entity).getShooter() instanceof Entity) {
             return getSource((Entity) ((Projectile) entity).getShooter());
