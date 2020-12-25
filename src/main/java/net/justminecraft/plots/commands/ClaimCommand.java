@@ -29,10 +29,12 @@ public class ClaimCommand extends SubCommand {
             return false;
         }
 
+        boolean claimingAsOther = false;
         OfflinePlayer claimAs = (OfflinePlayer) sender;
 
         if (args.length >= 1 && sender.hasPermission("justplots.claim.other")) {
             claimAs = Bukkit.getOfflinePlayer(args[0]);
+            claimingAsOther = true;
         }
 
         String world = ((Player) sender).getWorld().getName();
@@ -52,7 +54,7 @@ public class ClaimCommand extends SubCommand {
 
         int maxPlots = JustPlots.getMaxPlots(sender);
 
-        if (maxPlots < Integer.MAX_VALUE && JustPlots.getPlotsInWorld((Player) sender, ((Player) sender).getWorld()).size() >= maxPlots) {
+        if (!claimingAsOther && maxPlots < Integer.MAX_VALUE && JustPlots.getPlotsInWorld((Player) sender, ((Player) sender).getWorld()).size() >= maxPlots) {
             sender.sendMessage(ChatColor.RED + "You have reached your plot limit of " + maxPlots);
             return false;
         }
