@@ -95,36 +95,6 @@ public class PlotLoader implements Runnable {
         }
     }
 
-    private void loadDenied() {
-        int counter = 0;
-
-        try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement("SELECT * FROM justplots_denied")) {
-            ResultSet results = statement.executeQuery();
-
-            while (results.next()) {
-                String world = results.getString("world");
-                int x = results.getInt("x");
-                int z = results.getInt("z");
-                String owner = results.getString("uuid");
-                try {
-                    Plot plot = JustPlots.getPlot(world, x, z);
-                    plot.getAdded().add(UUID.fromString(owner));
-                } catch (Exception e) {
-                    plots.getLogger().warning("Could not load denied player for plot " + world + ";" + x + ";" + z);
-                    e.printStackTrace();
-                }
-
-                if (++counter % 10000 == 0) {
-                    plots.getLogger().info("Loading denied players... (" + counter + ")");
-                }
-            }
-        } catch (SQLException e) {
-            plots.getLogger().severe("FAILED TO LOAD DENIED PLAYERS");
-            e.printStackTrace();
-            return;
-        }
-    }
-
     @Override
     public void run() {
         long timer = System.currentTimeMillis();
@@ -132,7 +102,6 @@ public class PlotLoader implements Runnable {
 
         loadPlots();
         loadAdded();
-        loadDenied();
 
         plots.getLogger().info("Loaded plots (took " + (System.currentTimeMillis() - timer) + "ms)");
     }

@@ -28,7 +28,6 @@ public class Plot implements Comparable<Plot> {
     private final PlotWorld plotWorld;
 
     private final HashSet<UUID> added = new HashSet<>();
-    private final HashSet<UUID> denied = new HashSet<>();
 
     public Plot(String world, int x, int z, UUID owner, long creation) {
         this.plotId = new PlotId(x, z);
@@ -132,14 +131,6 @@ public class Plot implements Comparable<Plot> {
         return isOwner(uuid) || added.contains(uuid);
     }
 
-    public boolean isDenied(OfflinePlayer player) {
-        return isDenied(player.getUniqueId());
-    }
-
-    public boolean isDenied(UUID uuid) {
-        return denied.contains(uuid);
-    }
-
     public void addPlayer(UUID uuid) {
         try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement(
                 "INSERT OR IGNORE INTO justplots_added (world, x, z, uuid) VALUES (?, ?, ?, ?)"
@@ -169,38 +160,6 @@ public class Plot implements Comparable<Plot> {
             added.remove(uuid);
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    public void denyPlayer(UUID uuid) {
-        try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement(
-                "INSERT OR IGNORE INTO justplots_denied (world, x, z, uuid) VALUES (?, ?, ?, ?)"
-        )) {
-            statement.setString(1, world);
-            statement.setInt(2, x);
-            statement.setInt(3, z);
-            statement.setString(4, uuid.toString());
-            statement.executeUpdate();
-
-            denied.add(uuid);
-        } catch (SQLException e) {
-            throw  new RuntimeException(e);
-        }
-    }
-
-    public void unDenyPlayer(UUID uuid) {
-        try (PreparedStatement statement = JustPlots.getDatabase().prepareStatement(
-                "DELETE FROM justplots_denied WHERE world = ? AND x = ? AND z = ? AND uuid = ?"
-        )) {
-            statement.setString(1, world);
-            statement.setInt(2, x);
-            statement.setInt(3, z);
-            statement.setString(4, uuid.toString());
-            statement.executeUpdate();
-
-            denied.remove(uuid);
-        } catch (SQLException e) {
-            throw  new RuntimeException(e);
         }
     }
 
@@ -260,10 +219,6 @@ public class Plot implements Comparable<Plot> {
 
     public HashSet<UUID> getAdded() {
         return added;
-    }
-
-    public HashSet<UUID> getDenied() {
-        return denied;
     }
 
     public long getCreation() {

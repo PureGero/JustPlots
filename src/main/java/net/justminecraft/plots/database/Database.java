@@ -48,12 +48,6 @@ public abstract class Database {
                         + "z INT NOT NULL,"
                         + "uuid CHAR(36) NOT NULL,"
                         + "UNIQUE (world, x, z, uuid))");
-                statement.addBatch("CREATE TABLE IF NOT EXISTS justplots_denied ("
-                        + "world VARCHAR(45) NOT NULL,"
-                        + "x INT NOT NULL,"
-                        + "z INT NOT NULL,"
-                        + "uuid CHAR(36) NOT NULL,"
-                        + "UNIQUE (world, x, z, uuid))");
 
                 statement.executeBatch();
                 statement.clearBatch();

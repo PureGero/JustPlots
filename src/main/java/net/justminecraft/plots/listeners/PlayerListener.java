@@ -27,10 +27,6 @@ public class PlayerListener implements Listener {
         Plot from = JustPlots.getPlotAt(e.getFrom());
         Plot to = JustPlots.getPlotAt(e.getTo());
 
-        if (!e.isCancelled() && to != null && to.isDenied(e.getPlayer().getUniqueId())) {
-            e.setTo(to.getHome());
-        }
-
         if (from != to) {
             if (from != null) {
                 PlotExitEvent exitEvent = new PlotExitEvent(from, e.getPlayer());
@@ -48,7 +44,7 @@ public class PlayerListener implements Listener {
 
                 Bukkit.getServer().getPluginManager().callEvent(enterEvent);
 
-                if (enterEvent.isCancelled() || to.isDenied(e.getPlayer().getUniqueId())) {
+                if (enterEvent.isCancelled()) {
                     e.setCancelled(true);
                 }
             }
@@ -63,10 +59,6 @@ public class PlayerListener implements Listener {
 
         Plot from = JustPlots.getPlotAt(e.getFrom());
         Plot to = JustPlots.getPlotAt(e.getTo());
-
-        if (!e.isCancelled() && to != null && to.isDenied(e.getPlayer().getUniqueId())) {
-            e.setTo(to.getHome());
-        }
 
         if (from != to) {
             if (from != null) {
