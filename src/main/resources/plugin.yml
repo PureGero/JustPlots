@@ -16,6 +16,10 @@ permissions:
     description: Add a player to your plot
   justplots.add.other:
     description: Add a player to another player's plot
+  justplots.deny:
+    description: Deny a player from your plot
+  justplots.deny.other:
+    description:  Deny a player from another player's plot
   justplots.auto:
     description: Claim the next free plot
   justplots.claim:
