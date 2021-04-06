@@ -4,6 +4,7 @@ import io.papermc.lib.PaperLib;
 import net.justminecraft.plots.events.PlotDeletedEvent;
 import net.justminecraft.plots.util.AsyncUtil;
 import net.justminecraft.plots.util.PaperUtil;
+import net.justminecraft.plots.util.WorldHeight;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -351,14 +352,14 @@ public class Plot implements Comparable<Plot> {
     public Location getBottom() {
         return new Location(getWorld(),
                 Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0),
-                0,
+                WorldHeight.getMinHeight(getWorld()),
                 Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0));
     }
 
     public Location getTop() {
         return new Location(getWorld(),
                 Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * x + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() - 1),
-                255,
+                WorldHeight.getMaxHeight(getWorld()),
                 Math.ceil((plotWorld.getPlotSize() + plotWorld.getRoadSize()) * z + plotWorld.getRoadSize() / 2.0 + plotWorld.getPlotSize() - 1));
     }
 

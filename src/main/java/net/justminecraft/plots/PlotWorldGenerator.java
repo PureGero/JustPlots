@@ -1,5 +1,6 @@
 package net.justminecraft.plots;
 
+import net.justminecraft.plots.util.WorldHeight;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
@@ -75,22 +76,22 @@ public class PlotWorldGenerator extends ChunkGenerator {
 
         ChunkData chunkData = createChunkData(world);
 
-        generateBase(plotWorld, chunkData);
+        generateBase(plotWorld, chunkData, world);
 
-        generateBiomes(plotWorld, biomeGrid);
+        generateBiomes(plotWorld, biomeGrid, world);
 
         generateRoad(plotWorld, cx, cz, chunkData);
 
         return chunkData;
     }
 
-    private void generateBase(PlotWorld plotWorld, ChunkData chunkData) {
+    private void generateBase(PlotWorld plotWorld, ChunkData chunkData, World world) {
         for (int x = 0; x < 16; x ++) {
             for (int z = 0; z < 16; z ++) {
 
-                chunkData.setBlock(x, 0, z, Material.BEDROCK);
+                chunkData.setBlock(x, WorldHeight.getMinHeight(world), z, Material.BEDROCK);
 
-                for (int y = 1; y < plotWorld.getFloorHeight(); y ++) {
+                for (int y = WorldHeight.getMinHeight(world) + 1; y < plotWorld.getFloorHeight(); y ++) {
                     chunkData.setBlock(x, y, z, Material.DIRT);
                 }
 
@@ -100,10 +101,10 @@ public class PlotWorldGenerator extends ChunkGenerator {
         }
     }
 
-    private void generateBiomes(PlotWorld plotWorld, BiomeGrid biomeGrid) {
+    private void generateBiomes(PlotWorld plotWorld, BiomeGrid biomeGrid, World world) {
         for (int x = 0; x < 16; x ++) {
             for (int z = 0; z < 16; z ++) {
-                for (int y = 0; y < 256; y ++) {
+                for (int y = WorldHeight.getMinHeight(world); y < WorldHeight.getMaxHeight(world); y ++) {
                     biomeGrid.setBiome(x, y, z, Biome.PLAINS);
                 }
             }

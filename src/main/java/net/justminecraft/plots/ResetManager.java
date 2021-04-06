@@ -2,6 +2,7 @@ package net.justminecraft.plots;
 
 import io.papermc.lib.PaperLib;
 import net.justminecraft.plots.util.AsyncUtil;
+import net.justminecraft.plots.util.WorldHeight;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -60,11 +61,11 @@ public class ResetManager {
                 AsyncUtil.ensureMainThread(() -> {
                     for (int x = minx; x <= maxx; x++) {
                         for (int z = minz; z <= maxz; z++) {
-                            for (int y = 0; y < 256; y++) {
+                            for (int y = WorldHeight.getMinHeight(world); y < WorldHeight.getMaxHeight(world); y++) {
                                 Block block = chunk.getBlock(x & 0xF, y, z & 0xF);
 
                                 Material material = Material.AIR;
-                                if (y == 0) {
+                                if (y == WorldHeight.getMinHeight(world)) {
                                     material = Material.BEDROCK;
                                 } else if (y < plotWorld.getFloorHeight()) {
                                     material = Material.DIRT;

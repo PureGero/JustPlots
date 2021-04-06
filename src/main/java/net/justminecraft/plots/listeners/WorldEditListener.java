@@ -131,7 +131,7 @@ public class WorldEditListener implements Listener {
             bottom = plot.getBottom();
             top = plot.getTop();
         } else {
-            bottom = top = new Location(player.getWorld(), 0, -1, 0);
+            bottom = top = new Location(player.getWorld(), 0, Integer.MIN_VALUE, 0);
         }
 
         LocalSession localSession = worldEditPlugin.getSession(player);
