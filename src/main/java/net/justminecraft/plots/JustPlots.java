@@ -8,6 +8,7 @@ import net.justminecraft.plots.converters.PlotSquaredConverter;
 import net.justminecraft.plots.database.Database;
 import net.justminecraft.plots.database.PlotLoader;
 import net.justminecraft.plots.database.SQLiteDatabase;
+import net.justminecraft.plots.events.PlotClaimEvent;
 import net.justminecraft.plots.listeners.PaperListener;
 import net.justminecraft.plots.listeners.PlayerListener;
 import net.justminecraft.plots.listeners.PlotListener;
@@ -265,6 +266,9 @@ public class JustPlots extends JavaPlugin {
 
         plot.claimWalls();
         plot.updateSign();
+
+        PlotClaimEvent event = new PlotClaimEvent(plot, owner);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         return plot;
     }
