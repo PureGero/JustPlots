@@ -344,7 +344,7 @@ public class JustPlots extends JavaPlugin {
         plot.updateSign();
 
         PlotClaimEvent event = new PlotClaimEvent(plot, owner);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getServer().getPluginManager().callEvent(event));
 
         return plot;
     }

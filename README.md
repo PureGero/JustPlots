@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-  compile "net.justminecraft.plots:justplots:0.9.6"
+  compile "net.justminecraft.plots:justplots:0.9.8"
 }
 ```
 
