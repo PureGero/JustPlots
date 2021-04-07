@@ -13,6 +13,8 @@ import net.justminecraft.plots.listeners.PaperListener;
 import net.justminecraft.plots.listeners.PlayerListener;
 import net.justminecraft.plots.listeners.PlotListener;
 import net.justminecraft.plots.listeners.WorldEditListener;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -73,6 +75,9 @@ public class JustPlots extends JavaPlugin {
         if (PaperLib.isPaper()) {
             new PaperListener(this);
         }
+
+        Metrics metrics = new Metrics(this, 10953);
+        metrics.addCustomChart(new SingleLineChart("plot_counts", () -> plotWorlds.values().stream().mapToInt(plotWorld -> plotWorld.getPlots().size()).sum()));
     }
 
     private boolean hasWorldEdit() {
