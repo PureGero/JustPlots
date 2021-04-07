@@ -115,14 +115,7 @@ public class JustPlots extends JavaPlugin {
      */
     @NotNull
     public static PlotWorld getPlotWorld(@NotNull String world) {
-        PlotWorld plotWorld = plotWorlds.get(world);
-
-        if (plotWorld == null) {
-            plotWorld = new PlotWorld(world);
-            plotWorlds.put(world, plotWorld);
-        }
-
-        return plotWorld;
+        return plotWorlds.computeIfAbsent(world, PlotWorld::new);
     }
 
     /**
@@ -252,20 +245,62 @@ public class JustPlots extends JavaPlugin {
         return database;
     }
 
+    /**
+     * Create a plot for the specified owner in the specified world with the
+     * specified plot id. Will override any existing plot with the specified
+     * plot id in the world.
+     * @param world The world to create the plot in
+     * @param x The x component of the plot id
+     * @param z The z component of the plot id
+     * @param owner The owner of this plot
+     * @return The newly created plot
+     */
     public static Plot createPlot(String world, int x, int z, UUID owner) {
         return createPlot(world, x, z, owner, System.currentTimeMillis());
     }
 
+    /**
+     * Create a plot for the specified owner in the specified world with the
+     * specified plot id. Will override any existing plot with the specified
+     * plot id in the world.
+     * @param world The world to create the plot in
+     * @param x The x component of the plot id
+     * @param z The z component of the plot id
+     * @param owner The owner of this plot
+     * @param creation The creation time of the plot
+     * @return The newly created plot
+     */
     public static Plot createPlot(String world, int x, int z, UUID owner, long creation) {
         Plot plot = new Plot(world, x, z, owner, creation);
         plot.createInDatabase();
         return plot;
     }
 
+    /**
+     * Claim a plot for the specified owner in the specified world with the
+     * specified plot id. This method will generate the plot borders and the
+     * plot sign. Will override any existing plot with the specified plot id in
+     * the world.
+     * @param world The world to create the plot in
+     * @param id The location of the plot
+     * @param owner The owner of this plot
+     * @return The newly created plot
+     */ 
     public static Plot claimPlot(String world, PlotId id, UUID owner) {
         return claimPlot(world, id.getX(), id.getZ(), owner);
     }
 
+    /**
+     * Claim a plot for the specified owner in the specified world with the
+     * specified plot id. This method will generate the plot borders and the
+     * plot sign. Will override any existing plot with the specified plot id in
+     * the world.
+     * @param world The world to create the plot in
+     * @param x The x component of the plot id
+     * @param z The z component of the plot id
+     * @param owner The owner of this plot
+     * @return The newly created plot
+     */
     public static Plot claimPlot(String world, int x, int z, UUID owner) {
         Plot plot = createPlot(world, x, z, owner);
 
@@ -280,12 +315,14 @@ public class JustPlots extends JavaPlugin {
 
     @NotNull
     public static String getUsername(@NotNull UUID uuid) {
+        // Try Minecraft's player cache
         String name = Bukkit.getOfflinePlayer(uuid).getName();
 
         if (name != null) {
             return name;
         }
 
+        // Try Essentials' player cache if it's installed
         Plugin essentials = Bukkit.getPluginManager().getPlugin("Essentials");
         if (essentials != null) {
             User user = ((Essentials) essentials).getUser(uuid);
@@ -295,9 +332,16 @@ public class JustPlots extends JavaPlugin {
             }
         }
 
+        // Return the uuid if no username is found
         return name == null ? uuid.toString() : name;
     }
 
+    /**
+     * Return the maximum number of plots the player can claim
+     * @param player The player to get the maximum number of plots for
+     * @return The maximum numbers of plots for the player, or
+     * Integer.MAX_VALUE if there is no limit
+     */
     public static int getMaxPlots(Permissible player) {
         int maxPlots = -1;
 
