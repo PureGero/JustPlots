@@ -1,5 +1,6 @@
 package net.justminecraft.plots.listeners;
 
+import com.destroystokyo.paper.event.block.BeaconEffectEvent;
 import com.destroystokyo.paper.event.entity.EntityPathfindEvent;
 import com.destroystokyo.paper.event.entity.SlimePathfindEvent;
 import net.justminecraft.plots.JustPlots;
@@ -7,6 +8,7 @@ import net.justminecraft.plots.Plot;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -95,6 +97,18 @@ public class PaperListener implements Listener {
             location.setYaw((float) (Math.random() * 360));
             event.getEntity().teleport(location);
 
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBeaconEffect(BeaconEffectEvent event) {
+        Location beaconLocation = event.getBlock().getLocation();
+        Player player = event.getPlayer();
+        Plot beaconPlot = JustPlots.getPlotAt(beaconLocation);
+        Plot playerPlot = JustPlots.getPlotAt(player);
+        
+        if (beaconPlot != null && beaconPlot != playerPlot) {
             event.setCancelled(true);
         }
     }
