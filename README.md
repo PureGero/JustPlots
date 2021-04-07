@@ -18,17 +18,19 @@ The plugin jar will be found in `target`. Enjoy!
 
 JustPlots as a dependency
 =========================
+[![Clojars Project](https://img.shields.io/clojars/v/net.justminecraft.plots/justplots.svg)](https://clojars.org/net.justminecraft.plots/justplots)
+
 Add the following into your build.gradle:
 
 ```
 repositories {
   maven {
-    url "https://raw.githubusercontent.com/PureGero/JustPlots/repository/"
+    url "https://repo.clojars.org/"
   }
 }
 
 dependencies {
-  compileOnly "net.justminecraft.plots:JustPlots:0.9.5"
+  compile "net.justminecraft.plots:justplots:0.9.6"
 }
 ```
 
@@ -38,15 +40,14 @@ Or in your pom.xml:
 <repositories>
     <repository>
         <id>justplots-repo</id>
-        <url>https://raw.githubusercontent.com/PureGero/JustPlots/repository/</url>
+        <url>https://repo.clojars.org/</url>
     </repository>
 </repositories>
 <dependencies>
     <dependency>
         <groupId>net.justminecraft.plots</groupId>
-        <artifactId>JustPlots</artifactId>
-        <version>0.9.5</version>
-        <scope>provided</scope>
+        <artifactId>justplots</artifactId>
+        <version>0.9.6</version>
     </dependency>
 </dependencies>
 ```
