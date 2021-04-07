@@ -125,18 +125,49 @@ public class JustPlots extends JavaPlugin {
         return getPlotWorld(world).isPlotWorld();
     }
 
+    /**
+     * Get the plot in the specified world with the specified plot id
+     * @param world The world to get the plot in
+     * @param x The x component of the plot id
+     * @param z The z compoment of the plot id
+     * @return The plot in the world with the plot id, or null if no such plot
+     * exists
+     */
+    @Nullable
     public static Plot getPlot(String world, int x, int z) {
         return getPlot(world, new PlotId(x, z));
     }
 
+    /**
+     * Get the plot in the specified world with the specified plot id
+     * @param world The world to get the plot in
+     * @param id The id of the plot
+     * @return The plot in the world with the plot id, or null if no such plot
+     * exists
+     */
+    @Nullable
     public static Plot getPlot(String world, PlotId id) {
         return getPlotWorld(world).getPlot(id);
     }
-
+    
+    /**
+     * Get the plot the specified entity is standing on
+     * @param entity The entity to get the plot that they're on
+     * @return The plot at that location, or null if there is no plot at
+     * location or if it is a road
+     */
+    @Nullable
     public static Plot getPlotAt(Entity entity) {
         return getPlotAt(entity.getLocation());
     }
 
+    /**
+     * Get the plot at the specified location
+     * @param location The location of the plot to get
+     * @return The plot at that location, or null if there is no plot at
+     * location or if it is a road
+     */
+    @Nullable
     public static Plot getPlotAt(Location location) {
         PlotId id = getPlotIdAt(location);
 
@@ -153,10 +184,12 @@ public class JustPlots extends JavaPlugin {
         return plot;
     }
 
+    @Nullable
     public static PlotId getPlotIdAt(Entity entity) {
         return getPlotIdAt(entity.getLocation());
     }
 
+    @Nullable
     public static PlotId getPlotIdAt(Location location) {
         if (location.getWorld() == null) {
             return null;
@@ -174,15 +207,18 @@ public class JustPlots extends JavaPlugin {
         return new PlotId(x, z);
     }
 
-    public static Set<Plot> getPlotsIfCached(UUID uuid) {
+    @Nullable
+    public static Set<Plot> getPlotsIfCached(@NotNull UUID uuid) {
         return playerPlotListCache.get(uuid);
     }
 
-    public static Set<Plot> getPlots(Player player) {
+    @NotNull
+    public static Set<Plot> getPlots(@NotNull Player player) {
         return getPlots(player.getUniqueId());
     }
 
-    public static Set<Plot> getPlots(UUID uuid) {
+    @NotNull
+    public static Set<Plot> getPlots(@NotNull UUID uuid) {
         if (playerPlotListCache.containsKey(uuid)) {
             return playerPlotListCache.get(uuid);
         }
