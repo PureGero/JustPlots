@@ -13,7 +13,7 @@ public class PlotClaimEvent extends PlotEvent {
     private static final HandlerList handlers = new HandlerList();
 
     public PlotClaimEvent(Plot plot, UUID player) {
-        super(plot, player);
+        super(plot, player, true);
     }
 
     @Override
