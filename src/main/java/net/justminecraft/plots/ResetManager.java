@@ -59,13 +59,15 @@ public class ResetManager {
                 }
 
                 AsyncUtil.ensureMainThread(() -> {
+                    int miny = WorldHeight.getMinHeight(world);
+                    int maxy = WorldHeight.getMaxHeight(world);
                     for (int x = minx; x <= maxx; x++) {
                         for (int z = minz; z <= maxz; z++) {
-                            for (int y = WorldHeight.getMinHeight(world); y < WorldHeight.getMaxHeight(world); y++) {
+                            for (int y = miny; y < maxy; y++) {
                                 Block block = chunk.getBlock(x & 0xF, y, z & 0xF);
 
                                 Material material = Material.AIR;
-                                if (y == WorldHeight.getMinHeight(world)) {
+                                if (y == miny) {
                                     material = Material.BEDROCK;
                                 } else if (y < plotWorld.getFloorHeight()) {
                                     material = Material.DIRT;

@@ -86,25 +86,31 @@ public class PlotWorldGenerator extends ChunkGenerator {
     }
 
     private void generateBase(PlotWorld plotWorld, ChunkData chunkData, World world) {
+        int miny = WorldHeight.getMinHeight(world);
+        int floory = plotWorld.getFloorHeight();
+
         for (int x = 0; x < 16; x ++) {
             for (int z = 0; z < 16; z ++) {
 
-                chunkData.setBlock(x, WorldHeight.getMinHeight(world), z, Material.BEDROCK);
+                chunkData.setBlock(x, miny, z, Material.BEDROCK);
 
-                for (int y = WorldHeight.getMinHeight(world) + 1; y < plotWorld.getFloorHeight(); y ++) {
+                for (int y = miny + 1; y < floory; y ++) {
                     chunkData.setBlock(x, y, z, Material.DIRT);
                 }
 
-                chunkData.setBlock(x, plotWorld.getFloorHeight(), z, Material.GRASS_BLOCK);
+                chunkData.setBlock(x, floory, z, Material.GRASS_BLOCK);
 
             }
         }
     }
 
     private void generateBiomes(PlotWorld plotWorld, BiomeGrid biomeGrid, World world) {
+        int miny = WorldHeight.getMinHeight(world);
+        int maxy = WorldHeight.getMaxHeight(world);
+
         for (int x = 0; x < 16; x ++) {
             for (int z = 0; z < 16; z ++) {
-                for (int y = WorldHeight.getMinHeight(world); y < WorldHeight.getMaxHeight(world); y ++) {
+                for (int y = miny; y < maxy; y ++) {
                     biomeGrid.setBiome(x, y, z, Biome.PLAINS);
                 }
             }
